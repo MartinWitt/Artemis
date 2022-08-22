@@ -75,6 +75,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#merge">5. Merge</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#stale-bot">Stale Bot</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../language-guidelines/">Inclusive, Diversity-Sensitive, and Appreciative Language</a></li>
@@ -139,6 +140,7 @@
 <li><p><a class="reference internal" href="#merge" id="id10">5. Merge</a></p></li>
 </ul>
 </li>
+<li><p><a class="reference internal" href="#stale-bot" id="id11">Stale Bot</a></p></li>
 </ul>
 </div>
 <section id="naming-conventions-for-github-pull-requests">
@@ -260,6 +262,17 @@
 <h3><a class="toc-backref" href="#id10">5. Merge</a><a class="headerlink" href="#merge" title="Permalink to this heading"></a></h3>
 <p>A project maintainer merges your changes into the <code class="docutils literal notranslate"><span class="pre">develop</span></code> branch.</p>
 </section>
+</section>
+<section id="stale-bot">
+<h2><a class="toc-backref" href="#id11">Stale Bot</a><a class="headerlink" href="#stale-bot" title="Permalink to this heading"></a></h2>
+<p>If the pull request doesn’t have any activity for at least 7 days, the stale bot will mark the PR as <cite>stale</cite>.
+The <cite>stale</cite> status can simply be removed by adding a comment or a commit to the PR.
+After the PR is marked as <cite>stale</cite>, the bot waits another 14 days until the PR will be closed (21 days in total).
+Adding activity to the PR will remove the <cite>stale</cite> label again and reset the stale timer.
+To prevent the bot from adding the <cite>stale</cite> label to the PR in the first place, the <cite>no-stale</cite> label can be used.
+This label should only be utilized if the PR is blocked by another PR or the PR needs help from another developer.</p>
+<p>A full documentation on this bit can be found here:
+<a class="reference external" href="https://github.com/actions/stale">https://github.com/actions/stale</a></p>
 </section>
 </section>
 
