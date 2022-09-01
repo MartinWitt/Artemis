@@ -573,7 +573,7 @@ In a production setup, you have to at least change the user credentials (in the 
 If you used the preset <code class="docutils literal notranslate"><span class="pre">master.key</span></code> within the file <code class="docutils literal notranslate"><span class="pre">gitlab-jenkins-mysql.yml</span></code>, you can skip this step.
 In a production setup, you should use a random <code class="docutils literal notranslate"><span class="pre">master.key</span></code>, then you have to follow the steps described in  <a class="reference external" href="#gitlab-to-jenkins-push-notification-token">Gitlab to Jenkins push notification token</a> to generate the token.</p></li>
 <li><p>The <cite>application-local.yml</cite> must be adapted with the values configured in <code class="docutils literal notranslate"><span class="pre">jenkins-casc-config.yml</span></code>:
-If you used the preset <code class="docutils literal notranslate"><span class="pre">master.key</span></code> and are running a development setup, the correct values are already correctly inserted in the template configuration in the beginning of this page.</p></li>
+If you used the preset <code class="docutils literal notranslate"><span class="pre">master.key</span></code> and are running a development setup, the secrets can be found in the <a class="reference external" href="#artemis">artemis configuration template posted at the beginning of this page</a>.</p></li>
 </ol>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">artemis</span><span class="p">:</span>
     <span class="nt">user-management</span><span class="p">:</span>
@@ -581,19 +581,19 @@ If you used the preset <code class="docutils literal notranslate"><span class="p
         <span class="nt">internal-admin</span><span class="p">:</span>
             <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
             <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis-admin</span>
-        <span class="nt">version-control</span><span class="p">:</span>
-            <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http://localhost:8081</span>
-            <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
-            <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
-            <span class="nt">ci-token</span><span class="p">:</span> <span class="c1"># generated in step 9</span>
-        <span class="nt">continuous-integration</span><span class="p">:</span>
-            <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http://localhost:8080</span>
-            <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
-            <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
-            <span class="nt">vcs-credentials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_gitlab_admin_credentials</span>
-            <span class="nt">artemis-authentication-token-key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_notification_plugin_token</span>
-            <span class="nt">artemis-authentication-token-value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
-            <span class="nt">secret-push-token</span><span class="p">:</span> <span class="c1"># generated in step 3</span>
+    <span class="nt">version-control</span><span class="p">:</span>
+        <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http://localhost:8081</span>
+        <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
+        <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
+        <span class="nt">ci-token</span><span class="p">:</span> <span class="c1"># generated in step 9</span>
+    <span class="nt">continuous-integration</span><span class="p">:</span>
+        <span class="nt">url</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http://localhost:8082</span>
+        <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
+        <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
+        <span class="nt">vcs-credentials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_gitlab_admin_credentials</span>
+        <span class="nt">artemis-authentication-token-key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_notification_plugin_token</span>
+        <span class="nt">artemis-authentication-token-value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">artemis_admin</span>
+        <span class="nt">secret-push-token</span><span class="p">:</span> <span class="c1"># generated in step 3</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="5">
