@@ -83,8 +83,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#rest-endpoint-best-practices-for-authorization">21. REST endpoint best practices for authorization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#assert-using-the-most-specific-overload-method">22. Assert using the most specific overload method</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#general-testing-tips">23. General Testing Tips</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#counting-database-query-calls-within-tests">23. Counting database query calls within tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#avoid-using-mockbean">24. Avoid using &#64;MockBean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#counting-database-query-calls-within-tests">24. Counting database query calls within tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#avoid-using-mockbean">25. Avoid using &#64;MockBean</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../client/">Client</a></li>
@@ -551,31 +551,27 @@ This is the same reason why you should not name your variables int a, double b, 
 <p>If you want to write tests for Programming Exercises to test student’s submissions check out <a class="reference external" href="https://confluence.ase.in.tum.de/display/ArTEMiS/Best+Practices+for+writing+Java+Programming+Exercise+Tests+in+Artemis">this</a>.</p>
 </section>
 <section id="counting-database-query-calls-within-tests">
-<h2>23. Counting database query calls within tests<a class="headerlink" href="#counting-database-query-calls-within-tests" title="Permalink to this heading"></a></h2>
+<h2>24. Counting database query calls within tests<a class="headerlink" href="#counting-database-query-calls-within-tests" title="Permalink to this heading"></a></h2>
 <p>It’s possible to write tests that check how many database calls are performed during a REST call. This is useful to ensure that code changes don’t lead to more database calls,
 or at least to remind developers in case they do. It’s especially important for commonly used endpoints that users access multiple times or every time they use Artemis.
 However, we should consider carefully before adding such assertions to a test as it makes the test more tedious to maintain.</p>
 <p>An example on how to track how many database calls are performed during a REST call is shown below. It uses the <code class="docutils literal notranslate"><span class="pre">HibernateQueryInterceptor</span></code> which counts the number of queries.
 For ease of use, a custom assert <code class="docutils literal notranslate"><span class="pre">assertThatDb</span></code> was added that allows to do the check in one line. It also returns the original result of the REST call and so allows you to
-add any other assertions to the test, as shown below.
-.. code-block:: java</p>
-<blockquote>
-<div><p>public class TestClass {</p>
-<blockquote>
-<div><p>&#64;Test
-&#64;WithMockUser(username = “instructor1”, roles = “INSTRUCTOR”)
-public void testQueryCount() throws Exception {</p>
-<blockquote>
-<div><p>Course course = assertThatDb(() -&gt; request.get(“/api/courses/” + courses.get(0).getId() + “/for-dashboard”, HttpStatus.OK, Course.class)).hasBeenCalledTimes(3);
-assertThat(course).isNotNull();</p>
-</div></blockquote>
-<p>}</p>
-</div></blockquote>
-<p>}</p>
-</div></blockquote>
+add any other assertions to the test, as shown below.</p>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="kd">class</span> <span class="nc">TestClass</span> <span class="p">{</span>
+
+    <span class="nd">@Test</span>
+    <span class="nd">@WithMockUser</span><span class="p">(</span><span class="n">username</span> <span class="o">=</span> <span class="s">&quot;instructor1&quot;</span><span class="p">,</span> <span class="n">roles</span> <span class="o">=</span> <span class="s">&quot;INSTRUCTOR&quot;</span><span class="p">)</span>
+    <span class="kt">void</span> <span class="nf">testQueryCount</span><span class="p">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+        <span class="n">Course</span> <span class="n">course</span> <span class="o">=</span> <span class="n">assertThatDb</span><span class="p">(()</span> <span class="o">-&gt;</span> <span class="n">request</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">&quot;/api/courses/&quot;</span> <span class="o">+</span> <span class="n">courses</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="na">getId</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;/for-dashboard&quot;</span><span class="p">,</span> <span class="n">HttpStatus</span><span class="p">.</span><span class="na">OK</span><span class="p">,</span> <span class="n">Course</span><span class="p">.</span><span class="na">class</span><span class="p">)).</span><span class="na">hasBeenCalledTimes</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+        <span class="n">assertThat</span><span class="p">(</span><span class="n">course</span><span class="p">).</span><span class="na">isNotNull</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 <section id="avoid-using-mockbean">
-<h2>24. Avoid using &#64;MockBean<a class="headerlink" href="#avoid-using-mockbean" title="Permalink to this heading"></a></h2>
+<h2>25. Avoid using &#64;MockBean<a class="headerlink" href="#avoid-using-mockbean" title="Permalink to this heading"></a></h2>
 <p>Do not use the <code class="docutils literal notranslate"><span class="pre">&#64;SpyBean</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;MockBean</span></code> annotation unless absolutely necessary, or possibly in an abstract Superclass. If you want to see why in more detail, take a look <a class="reference external" href="https://www.baeldung.com/spring-tests">here</a>.
 Basically, every time <code class="docutils literal notranslate"><span class="pre">&#64;MockBean</span></code> appears in a class, the ApplicationContext cache gets marked as dirty, hence the runner will clean the cache after the test-class is done and restarts the application context.
 This leads to a large overhead, which tends to make the tests take a lot more time.</p>
