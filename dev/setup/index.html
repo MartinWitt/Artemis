@@ -490,8 +490,16 @@ You could use a compose file similar to this (as an example this deployment uses
 <ul>
 <li><p>The Dockerfile defines three Docker volumes</p>
 <blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">/opt/artemis/config</span></code>: This will be used to store the configuration of Artemis in YAML files. If this directory is empty, the default configuration of Artemis will be copied upon container start.</p></li>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">/opt/artemis/config</span></code>: This will be used to store the configuration of Artemis in YAML files. If this directory is empty, the default configuration of Artemis will be copied upon container start.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Instead of mounting this config directory, you can also use environment variables for the configuration as defined by the <a class="reference external" href="https://github.com/spring-projects/spring-boot/wiki/Relaxed-Binding-2.0#environment-variables">Spring relaxed binding</a>.
+You can either place those environment variables directly in the <code class="docutils literal notranslate"><span class="pre">environment</span></code> section, or create an <a class="reference external" href="https://docs.docker.com/compose/environment-variables/#the-env-file">.env-file</a>.
+When starting an Artemis container directly with the Docker-CLI, an .env-file can also be given via the <code class="docutils literal notranslate"><span class="pre">--env-file</span></code> option.</p>
+<p>To ease the transition of an existing set of YAML configuration files into the environment variable style, a <a class="reference external" href="https://github.com/b-fein/spring-yaml-to-env">helper script</a> can be used.</p>
+</div>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">/opt/artemis/data</span></code>: This directory should be used for any data (e.g., local clone of repositories). Therefore, configure Artemis to store this files into this directory. In order to do that, you have to change some properties in configuration files (i.e., <code class="docutils literal notranslate"><span class="pre">artemis.repo-clone-path</span></code>, <code class="docutils literal notranslate"><span class="pre">artemis.repo-download-clone-path</span></code>, <code class="docutils literal notranslate"><span class="pre">artemis.course-archives-path</span></code>, <code class="docutils literal notranslate"><span class="pre">artemis.submission-export-path</span></code>, and <code class="docutils literal notranslate"><span class="pre">artemis.file-upload-path</span></code>). Otherwise you’ll get permission failures.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">/opt/artemis/public/content</span></code>: This directory will be used for branding. You can specify a favicon, <code class="docutils literal notranslate"><span class="pre">imprint.html</span></code>, and <code class="docutils literal notranslate"><span class="pre">privacy_statement.html</span></code> here.</p></li>
 </ul>
