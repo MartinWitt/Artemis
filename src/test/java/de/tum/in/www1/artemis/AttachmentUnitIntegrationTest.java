@@ -32,6 +32,8 @@ import de.tum.in.www1.artemis.util.ModelFactory;
 
 class AttachmentUnitIntegrationTest extends AbstractSpringIntegrationBambooBitbucketJiraTest {
 
+    private static final String TEST_PREFIX = "AttachmentUnitIntegrationTest";
+
     @Autowired
     private AttachmentRepository attachmentRepository;
 
@@ -107,21 +109,21 @@ class AttachmentUnitIntegrationTest extends AbstractSpringIntegrationBambooBitbu
     }
 
     @Test
-    @WithMockUser(username = "tutor1", roles = "TA")
+    @WithMockUser(username = TEST_PREFIX + "tutor1", roles = "TA")
     void testAll_asTutor() throws Exception {
         this.attachmentUnit.setId(42L);
         this.testAllPreAuthorize();
     }
 
     @Test
-    @WithMockUser(username = "student1", roles = "USER")
+    @WithMockUser(username = TEST_PREFIX + "student1", roles = "USER")
     void testAll_asStudent() throws Exception {
         this.attachmentUnit.setId(42L);
         this.testAllPreAuthorize();
     }
 
     @Test
-    @WithMockUser(username = "instructor1", roles = "INSTRUCTOR")
+    @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void createAttachmentUnit_asInstructor_shouldCreateAttachmentUnit() throws Exception {
         var result = request.getMvc().perform(buildCreateAttachmentUnit(attachmentUnit, attachment, "Hello World")).andExpect(status().isCreated()).andReturn();
         var persistedAttachmentUnit = mapper.readValue(result.getResponse().getContentAsString(), AttachmentUnit.class);
@@ -133,13 +135,13 @@ class AttachmentUnitIntegrationTest extends AbstractSpringIntegrationBambooBitbu
     }
 
     @Test
-    @WithMockUser(username = "instructor42", roles = "INSTRUCTOR")
+    @WithMockUser(username = TEST_PREFIX + "instructor42", roles = "INSTRUCTOR")
     void createAttachmentUnit_InstructorNotInCourse_shouldReturnForbidden() throws Exception {
         request.getMvc().perform(buildCreateAttachmentUnit(attachmentUnit, attachment, "Hello World")).andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(username = "instructor1", roles = "INSTRUCTOR")
+    @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void updateAttachmentUnit_asInstructor_shouldUpdateAttachmentUnit() throws Exception {
         var createResult = request.getMvc().perform(buildCreateAttachmentUnit(attachmentUnit, attachment, "Hello World")).andExpect(status().isCreated()).andReturn();
         var attachmentUnit = mapper.readValue(createResult.getResponse().getContentAsString(), AttachmentUnit.class);
@@ -156,7 +158,7 @@ class AttachmentUnitIntegrationTest extends AbstractSpringIntegrationBambooBitbu
     }
 
     @Test
-    @WithMockUser(username = "instructor1", roles = "INSTRUCTOR")
+    @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void updateAttachmentUnit_asInstructor_shouldKeepOrdering() throws Exception {
         persistAttachmentUnitWithLecture();
 
@@ -184,7 +186,7 @@ class AttachmentUnitIntegrationTest extends AbstractSpringIntegrationBambooBitbu
     }
 
     @Test
-    @WithMockUser(username = "instructor42", roles = "INSTRUCTOR")
+    @WithMockUser(username = TEST_PREFIX + "instructor42", roles = "INSTRUCTOR")
     void updateAttachmentUnit_notInstructorInCourse_shouldReturnForbidden() throws Exception {
         persistAttachmentUnitWithLecture();
 
@@ -192,7 +194,7 @@ class AttachmentUnitIntegrationTest extends AbstractSpringIntegrationBambooBitbu
     }
 
     @Test
-    @WithMockUser(username = "instructor1", roles = "INSTRUCTOR")
+    @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void getAttachmentUnit_correctId_shouldReturnAttachmentUnit() throws Exception {
         persistAttachmentUnitWithLecture();
 
@@ -211,7 +213,7 @@ class AttachmentUnitIntegrationTest extends AbstractSpringIntegrationBambooBitbu
     }
 
     @Test
-    @WithMockUser(username = "instructor1", roles = "INSTRUCTOR")
+    @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void deleteAttachmentUnit_withAttachment_shouldDeleteAttachment() throws Exception {
         var result = request.getMvc().perform(buildCreateAttachmentUnit(attachmentUnit, attachment, "Hello World")).andExpect(status().isCreated()).andReturn();
         var persistedAttachmentUnit = mapper.readValue(result.getResponse().getContentAsString(), AttachmentUnit.class);

@@ -316,27 +316,32 @@ public class DatabaseUtilService {
         TestSecurityContextHolder.setContext(context);
     }
 
+    public List<User> addUsers(int numberOfStudents, int numberOfTutors, int numberOfEditors, int numberOfInstructors) {
+        return addUsers("", numberOfStudents, numberOfTutors, numberOfEditors, numberOfInstructors);
+    }
+
     /**
-     * Adds the provided number of students and tutors into the user repository. Students login is a concatenation of the prefix "student" and a number counting from 1 to
-     * numberOfStudents Tutors login is a concatenation of the prefix "tutor" and a number counting from 1 to numberOfStudents Tutors are all in the "tutor" group and students in
+     * Adds the provided number of students and tutors into the user repository. Students login is a concatenation of the test prefix, the username (e.g., "student") and a number counting from 1 to
+     * numberOfStudents. Tutors login is a concatenation of the test prefix, the username ("tutor") and a number counting from 1 to numberOfStudents Tutors are all in the "tutor" group and students in
      * the "tumuser" group
      *
+     * @param prefix              the prefix for the user login
      * @param numberOfStudents    the number of students that will be added to the database
      * @param numberOfTutors      the number of tutors that will be added to the database
      * @param numberOfEditors     the number of editors that will be added to the database
      * @param numberOfInstructors the number of instructors that will be added to the database
      */
-    public List<User> addUsers(int numberOfStudents, int numberOfTutors, int numberOfEditors, int numberOfInstructors) {
+    public List<User> addUsers(String prefix, int numberOfStudents, int numberOfTutors, int numberOfEditors, int numberOfInstructors) {
 
         authorityRepository.saveAll(adminAuthorities);
 
-        List<User> students = ModelFactory.generateActivatedUsers("student", passwordService.hashPassword(ModelFactory.USER_PASSWORD), new String[] { "tumuser", "testgroup" },
-                studentAuthorities, numberOfStudents);
-        List<User> tutors = ModelFactory.generateActivatedUsers("tutor", passwordService.hashPassword(ModelFactory.USER_PASSWORD), new String[] { "tutor", "testgroup" },
+        List<User> students = ModelFactory.generateActivatedUsers(prefix + "student", passwordService.hashPassword(ModelFactory.USER_PASSWORD),
+                new String[] { "tumuser", "testgroup" }, studentAuthorities, numberOfStudents);
+        List<User> tutors = ModelFactory.generateActivatedUsers(prefix + "tutor", passwordService.hashPassword(ModelFactory.USER_PASSWORD), new String[] { "tutor", "testgroup" },
                 tutorAuthorities, numberOfTutors);
-        List<User> editors = ModelFactory.generateActivatedUsers("editor", passwordService.hashPassword(ModelFactory.USER_PASSWORD), new String[] { "editor", "testgroup" },
-                editorAuthorities, numberOfEditors);
-        List<User> instructors = ModelFactory.generateActivatedUsers("instructor", passwordService.hashPassword(ModelFactory.USER_PASSWORD),
+        List<User> editors = ModelFactory.generateActivatedUsers(prefix + "editor", passwordService.hashPassword(ModelFactory.USER_PASSWORD),
+                new String[] { "editor", "testgroup" }, editorAuthorities, numberOfEditors);
+        List<User> instructors = ModelFactory.generateActivatedUsers(prefix + "instructor", passwordService.hashPassword(ModelFactory.USER_PASSWORD),
                 new String[] { "instructor", "testgroup" }, instructorAuthorities, numberOfInstructors);
         User admin = ModelFactory.generateActivatedUser("admin", passwordService.hashPassword(ModelFactory.USER_PASSWORD));
         admin.setGroups(Set.of("admin"));

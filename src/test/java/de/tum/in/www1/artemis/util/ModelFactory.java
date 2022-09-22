@@ -275,10 +275,10 @@ public class ModelFactory {
         return exercise;
     }
 
-    public static List<User> generateActivatedUsers(String loginPrefix, String commonPasswordHash, String[] groups, Set<Authority> authorities, int amount) {
+    public static List<User> generateActivatedUsers(String username, String commonPasswordHash, String[] groups, Set<Authority> authorities, int amount) {
         List<User> generatedUsers = new ArrayList<>();
         for (int i = 1; i <= amount; i++) {
-            User user = ModelFactory.generateActivatedUser(loginPrefix + i, commonPasswordHash);
+            User user = ModelFactory.generateActivatedUser(username + i, commonPasswordHash);
             if (groups != null) {
                 user.setGroups(Set.of(groups));
                 user.setAuthorities(authorities);
