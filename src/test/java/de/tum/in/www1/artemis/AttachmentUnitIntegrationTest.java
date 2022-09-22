@@ -57,7 +57,7 @@ class AttachmentUnitIntegrationTest extends AbstractSpringIntegrationBambooBitbu
 
     @BeforeEach
     void initTestCase() throws Exception {
-        this.database.addUsers(1, 1, 0, 1);
+        this.database.addUsers(TEST_PREFIX, 1, 1, 0, 1);
         this.attachment = ModelFactory.generateAttachment(null);
         this.attachment.setLink("files/temp/example.txt");
         this.lecture1 = this.database.createCourseWithLecture(true);
