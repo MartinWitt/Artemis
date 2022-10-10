@@ -34,7 +34,9 @@ public class InstanceMessageReceiveService {
 
     private final NotificationScheduleService notificationScheduleService;
 
-    private final ParticipantScoreSchedulerService participantScoreSchedulerService;
+    private final ParticipantScoreScheduleService participantScoreScheduleService;
+
+    private final LearningGoalProgressScheduleService learningGoalProgressScheduleService;
 
     private final Optional<AtheneScheduleService> atheneScheduleService;
 
@@ -54,7 +56,8 @@ public class InstanceMessageReceiveService {
             ModelingExerciseRepository modelingExerciseRepository, ModelingExerciseScheduleService modelingExerciseScheduleService,
             ExamMonitoringScheduleService examMonitoringScheduleService, TextExerciseRepository textExerciseRepository, ExerciseRepository exerciseRepository,
             Optional<AtheneScheduleService> atheneScheduleService, HazelcastInstance hazelcastInstance, UserRepository userRepository, UserScheduleService userScheduleService,
-            NotificationScheduleService notificationScheduleService, ParticipantScoreSchedulerService participantScoreSchedulerService) {
+            NotificationScheduleService notificationScheduleService, ParticipantScoreScheduleService participantScoreScheduleService,
+            LearningGoalProgressScheduleService learningGoalProgressScheduleService) {
         this.programmingExerciseRepository = programmingExerciseRepository;
         this.programmingExerciseScheduleService = programmingExerciseScheduleService;
         this.examMonitoringScheduleService = examMonitoringScheduleService;
@@ -66,7 +69,8 @@ public class InstanceMessageReceiveService {
         this.userRepository = userRepository;
         this.userScheduleService = userScheduleService;
         this.notificationScheduleService = notificationScheduleService;
-        this.participantScoreSchedulerService = participantScoreSchedulerService;
+        this.participantScoreScheduleService = participantScoreScheduleService;
+        this.learningGoalProgressScheduleService = learningGoalProgressScheduleService;
 
         hazelcastInstance.<Long>getTopic("programming-exercise-schedule").addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
@@ -135,6 +139,14 @@ public class InstanceMessageReceiveService {
         hazelcastInstance.<Long[]>getTopic("participant-score-schedule").addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleParticipantScore(message.getMessageObject()[0], message.getMessageObject()[1], message.getMessageObject()[2]);
+        });
+        hazelcastInstance.<Long[]>getTopic("invalidate-progress-exercise").addMessageListener(message -> {
+            SecurityUtils.setAuthorizationObject();
+            processProgressInvalidForExercise(message.getMessageObject()[0], message.getMessageObject()[1]);
+        });
+        hazelcastInstance.<Long[]>getTopic("invalidate-progress-lecture-unit").addMessageListener(message -> {
+            SecurityUtils.setAuthorizationObject();
+            processProgressInvalidForLectureUnit(message.getMessageObject()[0], message.getMessageObject()[1]);
         });
     }
 
@@ -237,6 +249,14 @@ public class InstanceMessageReceiveService {
 
     public void processScheduleParticipantScore(Long exerciseId, Long participantId, Long resultIdToBeDeleted) {
         log.info("Received schedule participant score for exercise {} and participant {} (result to be deleted: {})", exerciseId, participantId, resultIdToBeDeleted);
-        participantScoreSchedulerService.scheduleTask(exerciseId, participantId, resultIdToBeDeleted);
+        participantScoreScheduleService.scheduleTask(exerciseId, participantId, resultIdToBeDeleted);
+    }
+
+    public void processProgressInvalidForExercise(Long exerciseId, Long userId) {
+        learningGoalProgressScheduleService.invalidateLearningGoalProgressForExercise(exerciseId, userId);
+    }
+
+    public void processProgressInvalidForLectureUnit(Long lectureUnitId, Long userId) {
+        learningGoalProgressScheduleService.invalidateLearningGoalProgressForLectureUnit(lectureUnitId, userId);
     }
 }

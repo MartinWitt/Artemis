@@ -36,7 +36,6 @@ import de.tum.in.www1.artemis.service.ParticipationService;
 import de.tum.in.www1.artemis.service.TextAssessmentKnowledgeService;
 import de.tum.in.www1.artemis.util.ModelFactory;
 import de.tum.in.www1.artemis.web.rest.dto.CourseLearningGoalProgress;
-import de.tum.in.www1.artemis.web.rest.dto.IndividualLearningGoalProgress;
 import de.tum.in.www1.artemis.web.rest.dto.SearchResultPageDTO;
 
 class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbucketJiraTest {
@@ -527,44 +526,6 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
     }
 
     @Test
-    @WithMockUser(username = "student1", roles = "USER")
-    void getLearningGoalProgress_asStudent1_shouldReturnProgressTenOutOfTwenty() throws Exception {
-        IndividualLearningGoalProgress individualLearningGoalProgress = request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/individual-progress",
-                HttpStatus.OK, IndividualLearningGoalProgress.class);
-        assertThat(individualLearningGoalProgress.totalPointsAchievableByStudentsInLearningGoal).isEqualTo(30.0);
-        assertThat(individualLearningGoalProgress.pointsAchievedByStudentInLearningGoal).isEqualTo(10.0);
-    }
-
-    @Test
-    @WithMockUser(username = "student1", roles = "USER")
-    void getLearningGoalProgress_asStudent1_usingParticipantScores_shouldReturnProgressTenOutOfTwenty() throws Exception {
-        IndividualLearningGoalProgress individualLearningGoalProgress = request.get(
-                "/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/individual-progress?useParticipantScoreTable=true", HttpStatus.OK,
-                IndividualLearningGoalProgress.class);
-        assertThat(individualLearningGoalProgress.totalPointsAchievableByStudentsInLearningGoal).isEqualTo(30.0);
-        assertThat(individualLearningGoalProgress.pointsAchievedByStudentInLearningGoal).isEqualTo(10.0);
-    }
-
-    @Test
-    @WithMockUser(username = "team1student1", roles = "USER")
-    void getLearningGoalProgress_asTeam1Student1_shouldReturnProgressTenOutOfThirty() throws Exception {
-        IndividualLearningGoalProgress individualLearningGoalProgress = request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/individual-progress",
-                HttpStatus.OK, IndividualLearningGoalProgress.class);
-        assertThat(individualLearningGoalProgress.totalPointsAchievableByStudentsInLearningGoal).isEqualTo(30.0);
-        assertThat(individualLearningGoalProgress.pointsAchievedByStudentInLearningGoal).isEqualTo(5.0);
-    }
-
-    @Test
-    @WithMockUser(username = "team1student1", roles = "USER")
-    void getLearningGoalProgress_asTeam1Student1_usingParticipantScores_shouldReturnProgressTenOutOfThirty() throws Exception {
-        IndividualLearningGoalProgress individualLearningGoalProgress = request.get(
-                "/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/individual-progress?useParticipantScoreTable=true", HttpStatus.OK,
-                IndividualLearningGoalProgress.class);
-        assertThat(individualLearningGoalProgress.totalPointsAchievableByStudentsInLearningGoal).isEqualTo(30.0);
-        assertThat(individualLearningGoalProgress.pointsAchievedByStudentInLearningGoal).isEqualTo(5.0);
-    }
-
-    @Test
     @WithMockUser(username = "instructor1", roles = "INSTRUCTOR")
     void getLearningGoalCourseProgressTeamsTest_asInstructorOne() throws Exception {
         cleanUpInitialParticipations();
@@ -670,13 +631,7 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
         participationService.deleteAllByExerciseId(idOfModelingExercise, true, true);
         participationService.deleteAllByExerciseId(idOfTeamTextExercise, true, true);
         await().until(() -> participantScoreRepository.findAll().isEmpty());
-        await().until(() -> participantScoreSchedulerService.isIdle());
-    }
-
-    @Test
-    @WithMockUser(username = "student42", roles = "USER")
-    void getLearningGoalProgress_asStudentNotInCourse_shouldReturnProgressTenOutOfTwenty() throws Exception {
-        request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/individual-progress", HttpStatus.FORBIDDEN, IndividualLearningGoalProgress.class);
+        await().until(() -> participantScoreScheduleService.isIdle());
     }
 
     @Test

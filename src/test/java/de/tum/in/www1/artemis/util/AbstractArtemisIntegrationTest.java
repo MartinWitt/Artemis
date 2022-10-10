@@ -27,7 +27,7 @@ import de.tum.in.www1.artemis.service.notifications.SingleUserNotificationServic
 import de.tum.in.www1.artemis.service.programming.ProgrammingExerciseGradingService;
 import de.tum.in.www1.artemis.service.programming.ProgrammingExerciseParticipationService;
 import de.tum.in.www1.artemis.service.programming.ProgrammingTriggerService;
-import de.tum.in.www1.artemis.service.scheduled.ParticipantScoreSchedulerService;
+import de.tum.in.www1.artemis.service.scheduled.ParticipantScoreScheduleService;
 import de.tum.in.www1.artemis.service.scheduled.ProgrammingExerciseScheduleService;
 import de.tum.in.www1.artemis.service.scheduled.ScheduleService;
 
@@ -98,7 +98,7 @@ public abstract class AbstractArtemisIntegrationTest implements MockDelegate {
     protected ScheduleService scheduleService;
 
     @SpyBean
-    protected ParticipantScoreSchedulerService participantScoreSchedulerService;
+    protected ParticipantScoreScheduleService participantScoreScheduleService;
 
     @SpyBean
     protected TextBlockService textBlockService;
@@ -119,13 +119,13 @@ public abstract class AbstractArtemisIntegrationTest implements MockDelegate {
 
     @AfterEach
     void stopRunningTasks() {
-        participantScoreSchedulerService.shutdown();
+        participantScoreScheduleService.shutdown();
     }
 
     public void resetSpyBeans() {
         Mockito.reset(ltiService, gitService, groupNotificationService, singleUserNotificationService, websocketMessagingService, messagingTemplate, examAccessService, mailService,
                 instanceMessageSendService, programmingExerciseScheduleService, programmingExerciseParticipationService, urlService, scheduleService,
-                participantScoreSchedulerService, javaMailSender, programmingTriggerService);
+                participantScoreScheduleService, javaMailSender, programmingTriggerService);
     }
 
     @Override

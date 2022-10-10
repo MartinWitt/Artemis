@@ -106,4 +106,14 @@ public class MainInstanceMessageSendService implements InstanceMessageSendServic
     public void sendParticipantScoreSchedule(Long exerciseId, Long participantId, Long resultIdToBeDeleted) {
         instanceMessageReceiveService.processScheduleParticipantScore(exerciseId, participantId, resultIdToBeDeleted);
     }
+
+    @Override
+    public void sendProgressInvalidForExercise(Long exerciseId, Long userId) {
+        instanceMessageReceiveService.processProgressInvalidForExercise(exerciseId, userId);
+    }
+
+    @Override
+    public void sendProgressInvalidForLectureUnit(Long lectureUnitId, Long userId) {
+        instanceMessageReceiveService.processProgressInvalidForLectureUnit(lectureUnitId, userId);
+    }
 }

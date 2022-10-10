@@ -25,7 +25,6 @@ import de.tum.in.www1.artemis.security.Role;
 import de.tum.in.www1.artemis.service.AuthorizationCheckService;
 import de.tum.in.www1.artemis.service.LearningGoalService;
 import de.tum.in.www1.artemis.web.rest.dto.CourseLearningGoalProgress;
-import de.tum.in.www1.artemis.web.rest.dto.IndividualLearningGoalProgress;
 import de.tum.in.www1.artemis.web.rest.dto.PageableSearchDTO;
 import de.tum.in.www1.artemis.web.rest.dto.SearchResultPageDTO;
 import de.tum.in.www1.artemis.web.rest.errors.BadRequestAlertException;
@@ -83,27 +82,8 @@ public class LearningGoalResource {
             @RequestParam(defaultValue = "false", required = false) boolean useParticipantScoreTable) {
         log.debug("REST request to get course progress for LearningGoal : {}", learningGoalId);
         var learningGoal = findLearningGoal(Role.INSTRUCTOR, learningGoalId, courseId, true, true);
-        CourseLearningGoalProgress courseLearningGoalProgress = learningGoalService.calculateLearningGoalCourseProgress(learningGoal, useParticipantScoreTable);
+        CourseLearningGoalProgress courseLearningGoalProgress = new CourseLearningGoalProgress();
         return ResponseEntity.ok().body(courseLearningGoalProgress);
-    }
-
-    /**
-     * GET /courses/:courseId/goals/:learningGoalId/progress  gets the learning goal progress for the logged-in user
-     *
-     * @param courseId                 the id of the course to which the learning goal belongs
-     * @param learningGoalId           the id of the learning goal for which to get the progress
-     * @param useParticipantScoreTable use the participant score table instead of going through participation -> submission -> result
-     * @return the ResponseEntity with status 200 (OK) and with the learning goal performance in the body
-     */
-    @GetMapping("/courses/{courseId}/goals/{learningGoalId}/individual-progress")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<IndividualLearningGoalProgress> getLearningGoalProgress(@PathVariable Long learningGoalId, @PathVariable Long courseId,
-            @RequestParam(defaultValue = "false", required = false) boolean useParticipantScoreTable) {
-        log.debug("REST request to get performance for LearningGoal : {}", learningGoalId);
-        var learningGoal = findLearningGoal(Role.STUDENT, learningGoalId, courseId, true, true);
-        var user = userRepository.getUserWithGroupsAndAuthorities();
-        var individualLearningGoalProgress = learningGoalService.calculateLearningGoalProgress(learningGoal, user, useParticipantScoreTable);
-        return ResponseEntity.ok().body(individualLearningGoalProgress);
     }
 
     /**
@@ -159,7 +139,7 @@ public class LearningGoalResource {
 
         authorizationCheckService.checkHasAtLeastRoleInCourseElseThrow(Role.STUDENT, course, user);
 
-        Set<LearningGoal> learningGoals = learningGoalService.findAllForCourse(course, user);
+        Set<LearningGoal> learningGoals = learningGoalRepository.findAllForCourse(course.getId());
 
         return ResponseEntity.ok(new ArrayList<>(learningGoals));
     }

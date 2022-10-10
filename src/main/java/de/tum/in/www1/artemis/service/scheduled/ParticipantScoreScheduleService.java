@@ -44,9 +44,9 @@ import de.tum.in.www1.artemis.service.util.RoundingUtil;
  */
 @Service
 @Profile("scheduling")
-public class ParticipantScoreSchedulerService {
+public class ParticipantScoreScheduleService {
 
-    private final Logger logger = LoggerFactory.getLogger(ParticipantScoreSchedulerService.class);
+    private final Logger logger = LoggerFactory.getLogger(ParticipantScoreScheduleService.class);
 
     private final TaskScheduler scheduler;
 
@@ -68,7 +68,7 @@ public class ParticipantScoreSchedulerService {
 
     private final TeamRepository teamRepository;
 
-    public ParticipantScoreSchedulerService(@Qualifier("taskScheduler") TaskScheduler scheduler, ParticipantScoreRepository participantScoreRepository,
+    public ParticipantScoreScheduleService(@Qualifier("taskScheduler") TaskScheduler scheduler, ParticipantScoreRepository participantScoreRepository,
             StudentScoreRepository studentScoreRepository, TeamScoreRepository teamScoreRepository, ExerciseRepository exerciseRepository, ResultRepository resultRepository,
             UserRepository userRepository, TeamRepository teamRepository) {
         this.scheduler = scheduler;

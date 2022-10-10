@@ -109,4 +109,18 @@ public interface InstanceMessageSendService {
      * @param resultIdToBeDeleted the id of the result about to be deleted
      */
     void sendParticipantScoreSchedule(Long exerciseId, Long participantId, Long resultIdToBeDeleted);
+
+    /**
+     * Send a message to the main server that schedules to update the participant score for this exercise/participant
+     * @param exerciseId the id of the exercise
+     * @param participantId the id of the participant
+     */
+    void sendProgressInvalidForExercise(Long exerciseId, Long userId);
+
+    /**
+     * Send a message to the main server that schedules to update the participant score for this exercise/participant
+     * @param exerciseId the id of the exercise
+     * @param participantId the id of the participant
+     */
+    void sendProgressInvalidForLectureUnit(Long lectureUnitId, Long userId);
 }

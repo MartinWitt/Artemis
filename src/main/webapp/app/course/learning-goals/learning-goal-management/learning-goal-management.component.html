@@ -107,11 +107,7 @@
         </ngb-accordion>
     </div>
     <div class="d-flex my-3 flex-wrap gap-3 justify-content-evenly" style="min-height: 100px">
-        <jhi-learning-goal-card
-            *ngFor="let learningGoal of learningGoals; index as i; trackBy: identify"
-            [learningGoal]="learningGoal"
-            [learningGoalProgress]="getLearningGoalCourseProgress(learningGoal)"
-        >
+        <jhi-learning-goal-card *ngFor="let learningGoal of learningGoals; index as i; trackBy: identify" [learningGoal]="learningGoal" [progress]="100">
             <button
                 *jhiHasAnyAuthority="['ROLE_INSTRUCTOR', 'ROLE_ADMIN']"
                 jhiDeleteButton

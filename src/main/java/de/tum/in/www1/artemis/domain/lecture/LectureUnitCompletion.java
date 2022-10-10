@@ -7,7 +7,10 @@ import java.util.Objects;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import de.tum.in.www1.artemis.domain.User;
+import de.tum.in.www1.artemis.service.listeners.LectureUnitProgressListener;
 
 /**
  * This class models the 'completion' association between a user and a lecture unit.
@@ -15,25 +18,32 @@ import de.tum.in.www1.artemis.domain.User;
  */
 @Entity
 @Table(name = "lecture_unit_user")
+@EntityListeners(LectureUnitProgressListener.class)
 public class LectureUnitCompletion {
 
     /**
      * The primary key of the association, composited through {@link LectureUnitUserId}.
      */
     @EmbeddedId
-    @SuppressWarnings("unused")
+    @JsonIgnore
     private LectureUnitUserId id = new LectureUnitUserId();
 
     @ManyToOne
     @MapsId("userId")
+    @JsonIgnore
     private User user;
 
     @ManyToOne
     @MapsId("lectureUnitId")
+    @JsonIgnore
     private LectureUnit lectureUnit;
 
     @Column(name = "completed_date")
     private ZonedDateTime completedAt;
+
+    public LectureUnitUserId getId() {
+        return id;
+    }
 
     public User getUser() {
         return user;

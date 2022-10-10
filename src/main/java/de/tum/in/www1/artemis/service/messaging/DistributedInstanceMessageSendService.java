@@ -135,6 +135,18 @@ public class DistributedInstanceMessageSendService implements InstanceMessageSen
         sendMessageDelayed("participant-score-schedule", exerciseId, participantId, resultId);
     }
 
+    @Override
+    public void sendProgressInvalidForExercise(Long exerciseId, Long userId) {
+        log.info("Sending invalidate progress invalid for exercise {} and users {}.", exerciseId, userId);
+        sendMessageDelayed("invalidate-progress-exercise", exerciseId, userId);
+    }
+
+    @Override
+    public void sendProgressInvalidForLectureUnit(Long lectureUnitId, Long userId) {
+        log.info("Sending invalidate progress for lecture unit {} and users {}.", lectureUnitId, userId);
+        sendMessageDelayed("invalidate-progress-lecture-unit", lectureUnitId, userId);
+    }
+
     private void sendMessageDelayed(String destination, Long... payload) {
         exec.schedule(() -> hazelcastInstance.getTopic(destination).publish(payload), 1, TimeUnit.SECONDS);
     }
