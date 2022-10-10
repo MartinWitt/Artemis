@@ -2,9 +2,12 @@ package de.tum.in.www1.artemis.domain;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
 import javax.persistence.*;
+
+import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "learning_goal_user")
+@EntityListeners(AbstractAuditingEntity.class)
 public class LearningGoalProgress {
 
     /**
@@ -37,6 +41,11 @@ public class LearningGoalProgress {
 
     @Column(name = "confidence")
     private Double confidence;
+
+    @LastModifiedDate
+    @Column(name = "last_modified_date")
+    @JsonIgnore
+    private Instant lastModifiedDate;
 
     public LearningGoalUserId getId() {
         return id;
@@ -72,6 +81,10 @@ public class LearningGoalProgress {
 
     public void setConfidence(Double confidence) {
         this.confidence = confidence;
+    }
+
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
     @Override
