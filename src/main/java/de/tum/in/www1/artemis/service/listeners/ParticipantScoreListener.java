@@ -15,6 +15,10 @@ import de.tum.in.www1.artemis.domain.scores.StudentScore;
 import de.tum.in.www1.artemis.domain.scores.TeamScore;
 import de.tum.in.www1.artemis.service.messaging.InstanceMessageSendService;
 
+/**
+ * Listener for updates on {@link ParticipantScore} entities to update the {@link de.tum.in.www1.artemis.domain.LearningGoalProgress}.
+ * @see de.tum.in.www1.artemis.service.scheduled.LearningGoalProgressScheduleService
+ */
 @Component
 public class ParticipantScoreListener {
 
@@ -31,11 +35,13 @@ public class ParticipantScoreListener {
         this.instanceMessageSendService = instanceMessageSendService;
     }
 
+    /**
+     * This callback method is called after a participant score is created or updated.
+     * @param participantScore The participant score that was modified
+     */
     @PostUpdate
     @PostPersist
     public void createOrUpdateAssociatedParticipantScore(ParticipantScore participantScore) {
-        System.out.println("ParticipantScoreListener");
-
         Set<User> users = new HashSet<>();
         if (participantScore instanceof StudentScore) {
             users.add(((StudentScore) participantScore).getUser());
@@ -47,7 +53,7 @@ public class ParticipantScoreListener {
             return;
         }
 
-        users.stream().map(User::getId).forEach(userId -> instanceMessageSendService.sendProgressInvalidForExercise(participantScore.getExercise().getId(), userId));
+        users.stream().map(User::getId).forEach(userId -> instanceMessageSendService.sendProgressUpdateForExercise(participantScore.getExercise().getId(), userId));
     }
 
 }

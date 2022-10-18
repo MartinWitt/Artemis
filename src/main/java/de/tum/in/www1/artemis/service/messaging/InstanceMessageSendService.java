@@ -111,16 +111,16 @@ public interface InstanceMessageSendService {
     void sendParticipantScoreSchedule(Long exerciseId, Long participantId, Long resultIdToBeDeleted);
 
     /**
-     * Send a message to the main server that schedules to update the participant score for this exercise/participant
-     * @param exerciseId the id of the exercise
-     * @param participantId the id of the participant
+     * Send a message to the main server that schedules to update the learning goal progress
+     * @param exerciseId the id of the exercise (with linked learning goals)
+     * @param userId the id of the use
      */
-    void sendProgressInvalidForExercise(Long exerciseId, Long userId);
+    void sendProgressUpdateForExercise(Long exerciseId, Long userId);
 
     /**
-     * Send a message to the main server that schedules to update the participant score for this exercise/participant
-     * @param exerciseId the id of the exercise
-     * @param participantId the id of the participant
+     * Send a message to the main server that schedules to update the learning goal progress
+     * @param lectureUnitId the id of the lecture unit (with linked learning goals)
+     * @param userId the id of the use
      */
-    void sendProgressInvalidForLectureUnit(Long lectureUnitId, Long userId);
+    void sendProgressUpdateForLectureUnit(Long lectureUnitId, Long userId);
 }

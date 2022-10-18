@@ -136,13 +136,13 @@ public class DistributedInstanceMessageSendService implements InstanceMessageSen
     }
 
     @Override
-    public void sendProgressInvalidForExercise(Long exerciseId, Long userId) {
+    public void sendProgressUpdateForExercise(Long exerciseId, Long userId) {
         log.info("Sending invalidate progress invalid for exercise {} and users {}.", exerciseId, userId);
         sendMessageDelayed("invalidate-progress-exercise", exerciseId, userId);
     }
 
     @Override
-    public void sendProgressInvalidForLectureUnit(Long lectureUnitId, Long userId) {
+    public void sendProgressUpdateForLectureUnit(Long lectureUnitId, Long userId) {
         log.info("Sending invalidate progress for lecture unit {} and users {}.", lectureUnitId, userId);
         sendMessageDelayed("invalidate-progress-lecture-unit", lectureUnitId, userId);
     }

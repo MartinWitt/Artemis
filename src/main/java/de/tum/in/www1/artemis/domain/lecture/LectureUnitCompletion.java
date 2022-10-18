@@ -10,7 +10,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.tum.in.www1.artemis.domain.User;
-import de.tum.in.www1.artemis.service.listeners.LectureUnitProgressListener;
+import de.tum.in.www1.artemis.service.listeners.LectureUnitCompletionListener;
 
 /**
  * This class models the 'completion' association between a user and a lecture unit.
@@ -18,7 +18,7 @@ import de.tum.in.www1.artemis.service.listeners.LectureUnitProgressListener;
  */
 @Entity
 @Table(name = "lecture_unit_user")
-@EntityListeners(LectureUnitProgressListener.class)
+@EntityListeners(LectureUnitCompletionListener.class)
 public class LectureUnitCompletion {
 
     /**
