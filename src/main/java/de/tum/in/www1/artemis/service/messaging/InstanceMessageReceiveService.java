@@ -253,10 +253,10 @@ public class InstanceMessageReceiveService {
     }
 
     public void processProgressInvalidForExercise(Long exerciseId, Long userId) {
-        learningGoalProgressScheduleService.invalidateLearningGoalProgressForExercise(exerciseId, userId);
+        learningGoalProgressScheduleService.updateLearningGoalProgressForExercise(exerciseId, userId);
     }
 
     public void processProgressInvalidForLectureUnit(Long lectureUnitId, Long userId) {
-        learningGoalProgressScheduleService.invalidateLearningGoalProgressForLectureUnit(lectureUnitId, userId);
+        learningGoalProgressScheduleService.updateLearningGoalProgressForLectureUnit(lectureUnitId, userId);
     }
 }

@@ -16,6 +16,14 @@ import de.tum.in.www1.artemis.domain.LearningGoalProgress;
 @Repository
 public interface LearningGoalProgressRepository extends JpaRepository<LearningGoalProgress, Long> {
 
+    @Transactional
+    @Modifying
+    void deleteAllByLearningGoalId(Long learningGoalId);
+
+    @Transactional
+    @Modifying
+    void deleteAllByUserId(Long userId);
+
     @Query("""
             SELECT learningGoalProgress
             FROM LearningGoalProgress learningGoalProgress
@@ -62,4 +70,17 @@ public interface LearningGoalProgressRepository extends JpaRepository<LearningGo
             """)
     void invalidateAllByUserIdAndLearningGoalIds(@Param("userId") Long userId, @Param("learningGoalIds") List<Long> learningGoalIds);
 
+    @Query("""
+            SELECT AVG(learningGoalProgress.confidence)
+            FROM LearningGoalProgress learningGoalProgress
+            WHERE learningGoalProgress.learningGoal.id = :learningGoalId
+            """)
+    Optional<Double> findAverageConfidenceByLearningGoalId(@Param("learningGoalId") Long learningGoalId);
+
+    @Query("""
+            SELECT AVG(learningGoalProgress.progress)
+            FROM LearningGoalProgress learningGoalProgress
+            WHERE learningGoalProgress.learningGoal.id = :learningGoalId
+            """)
+    Optional<Double> findAverageProgressByLearningGoalId(@Param("learningGoalId") Long learningGoalId);
 }

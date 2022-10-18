@@ -34,6 +34,7 @@ import de.tum.in.www1.artemis.repository.*;
 import de.tum.in.www1.artemis.service.ModelAssessmentKnowledgeService;
 import de.tum.in.www1.artemis.service.ParticipationService;
 import de.tum.in.www1.artemis.service.TextAssessmentKnowledgeService;
+import de.tum.in.www1.artemis.service.scheduled.LearningGoalProgressScheduleService;
 import de.tum.in.www1.artemis.util.ModelFactory;
 import de.tum.in.www1.artemis.web.rest.dto.CourseLearningGoalProgress;
 import de.tum.in.www1.artemis.web.rest.dto.SearchResultPageDTO;
@@ -84,6 +85,9 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
 
     @Autowired
     private ParticipantScoreRepository participantScoreRepository;
+
+    @Autowired
+    private LearningGoalProgressScheduleService learningGoalProgressScheduleService;
 
     private Long idOfCourse;
 
@@ -540,13 +544,13 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
         createParticipationSubmissionAndResult(idOfTeamTextExercise, teams.get(2), 10.0, 0.0, 10, true);
         createParticipationSubmissionAndResult(idOfTeamTextExercise, teams.get(3), 10.0, 0.0, 50, true);
 
+        await().until(() -> participantScoreRepository.findAll().size() == 4);
+        await().until(() -> learningGoalProgressScheduleService.isIdle());
+
         CourseLearningGoalProgress courseLearningGoalProgress = request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/course-progress", HttpStatus.OK,
                 CourseLearningGoalProgress.class);
 
-        assertThat(courseLearningGoalProgress.totalPointsAchievableByStudentsInLearningGoal).isEqualTo(30.0);
-        assertThat(courseLearningGoalProgress.averagePointsAchievedByStudentInLearningGoal).isEqualTo(3.0);
-
-        assertThatSpecificCourseLectureUnitProgressExists(courseLearningGoalProgress, 80.0, 4, 30);
+        assertThat(courseLearningGoalProgress.averageScoreAchievedInLearningGoal).isEqualTo(60.0);
     }
 
     @Test
@@ -570,60 +574,13 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
 
         createParticipationSubmissionAndResult(idOfTextExercise, instructor1, 10.0, 0.0, 100, true); // will be ignored as not a student
 
+        await().until(() -> participantScoreRepository.findAll().size() == 5);
+        await().until(() -> learningGoalProgressScheduleService.isIdle());
+
         CourseLearningGoalProgress courseLearningGoalProgress = request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/course-progress", HttpStatus.OK,
                 CourseLearningGoalProgress.class);
 
-        assertThat(courseLearningGoalProgress.totalPointsAchievableByStudentsInLearningGoal).isEqualTo(30.0);
-        assertThat(courseLearningGoalProgress.averagePointsAchievedByStudentInLearningGoal).isEqualTo(3.0);
-
-        assertThatSpecificCourseLectureUnitProgressExists(courseLearningGoalProgress, 20.0, 4, 30.0);
-    }
-
-    @Test
-    @WithMockUser(username = "instructor1", roles = "INSTRUCTOR")
-    void getLearningGoalCourseProgressIndividualTest_asInstructorOne_usingParticipantScoreTable() throws Exception {
-        cleanUpInitialParticipations();
-
-        User student1 = userRepository.findOneByLogin("student1").get();
-        User student2 = userRepository.findOneByLogin("student2").get();
-        User student3 = userRepository.findOneByLogin("student3").get();
-        User student4 = userRepository.findOneByLogin("student4").get();
-        User instructor1 = userRepository.findOneByLogin("instructor1").get();
-
-        createParticipationSubmissionAndResult(idOfTextExercise, student1, 10.0, 0.0, 100, true);  // will be ignored in favor of last submission from team
-        createParticipationSubmissionAndResult(idOfTextExercise, student1, 10.0, 0.0, 50, false);
-
-        createParticipationSubmissionAndResult(idOfTextExercise, student2, 10.0, 0.0, 100, true);  // will be ignored in favor of last submission from student
-        createParticipationSubmissionAndResult(idOfTextExercise, student2, 10.0, 0.0, 10, false);
-
-        createParticipationSubmissionAndResult(idOfTextExercise, student3, 10.0, 0.0, 10, true);
-        createParticipationSubmissionAndResult(idOfTextExercise, student4, 10.0, 0.0, 50, true);
-
-        createParticipationSubmissionAndResult(idOfTextExercise, instructor1, 10.0, 0.0, 100, true); // will be ignored as not a student
-
-        await().until(() -> participantScoreRepository.findAll().size() == 5);
-
-        CourseLearningGoalProgress courseLearningGoalProgress = request.get(
-                "/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/course-progress?useParticipantScoreTable=true", HttpStatus.OK, CourseLearningGoalProgress.class);
-
-        assertThat(courseLearningGoalProgress.totalPointsAchievableByStudentsInLearningGoal).isEqualTo(30.0);
-        assertThat(courseLearningGoalProgress.averagePointsAchievedByStudentInLearningGoal).isEqualTo(3.0);
-
-        assertThatSpecificCourseLectureUnitProgressExists(courseLearningGoalProgress, 20.0, 4, 30.0);
-    }
-
-    private void assertThatSpecificCourseLectureUnitProgressExists(CourseLearningGoalProgress courseLearningGoalProgress, double expectedParticipationRate,
-            int expectedNoOfParticipants, double expectedAverageScore) {
-        boolean foundProgressWithCorrectNumbers = false;
-        for (CourseLearningGoalProgress.CourseLectureUnitProgress courseLectureUnitProgress : courseLearningGoalProgress.progressInLectureUnits) {
-            if (courseLectureUnitProgress.participationRate.equals(expectedParticipationRate) && courseLectureUnitProgress.noOfParticipants.equals(expectedNoOfParticipants)
-                    && courseLectureUnitProgress.averageScoreAchievedByStudentInLectureUnit.equals(expectedAverageScore)) {
-                foundProgressWithCorrectNumbers = true;
-                break;
-            }
-        }
-
-        assertThat(foundProgressWithCorrectNumbers).isTrue();
+        assertThat(courseLearningGoalProgress.averageScoreAchievedInLearningGoal).isEqualTo(45.0);
     }
 
     private void cleanUpInitialParticipations() {

@@ -56,9 +56,11 @@ public class LearningGoalResource {
 
     private final LearningGoalService learningGoalService;
 
+    private final LearningGoalProgressRepository learningGoalProgressRepository;
+
     public LearningGoalResource(CourseRepository courseRepository, AuthorizationCheckService authorizationCheckService, UserRepository userRepository,
             LearningGoalRepository learningGoalRepository, LearningGoalRelationRepository learningGoalRelationRepository, LectureUnitRepository lectureUnitRepository,
-            LearningGoalService learningGoalService) {
+            LearningGoalService learningGoalService, LearningGoalProgressRepository learningGoalProgressRepository) {
         this.courseRepository = courseRepository;
         this.learningGoalRelationRepository = learningGoalRelationRepository;
         this.lectureUnitRepository = lectureUnitRepository;
@@ -66,6 +68,7 @@ public class LearningGoalResource {
         this.userRepository = userRepository;
         this.learningGoalRepository = learningGoalRepository;
         this.learningGoalService = learningGoalService;
+        this.learningGoalProgressRepository = learningGoalProgressRepository;
     }
 
     /**
@@ -83,6 +86,10 @@ public class LearningGoalResource {
         log.debug("REST request to get course progress for LearningGoal : {}", learningGoalId);
         var learningGoal = findLearningGoal(Role.INSTRUCTOR, learningGoalId, courseId, true, true);
         CourseLearningGoalProgress courseLearningGoalProgress = new CourseLearningGoalProgress();
+        courseLearningGoalProgress.courseId = courseId;
+        courseLearningGoalProgress.learningGoalId = learningGoalId;
+        courseLearningGoalProgress.learningGoalTitle = learningGoal.getTitle();
+        courseLearningGoalProgress.averageScoreAchievedInLearningGoal = learningGoalProgressRepository.findAverageConfidenceByLearningGoalId(learningGoalId).orElse(0.0);
         return ResponseEntity.ok().body(courseLearningGoalProgress);
     }
 
@@ -120,6 +127,8 @@ public class LearningGoalResource {
         if (!relations.isEmpty()) {
             throw new BadRequestException("Can not delete a learning goal that has active relations");
         }
+
+        learningGoalProgressRepository.deleteAllByLearningGoalId(learningGoal.getId());
 
         learningGoalRepository.deleteById(learningGoal.getId());
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, learningGoal.getTitle())).build();
@@ -224,8 +233,7 @@ public class LearningGoalResource {
         var lectureUnitsWithoutExercises = lectureUnits.stream().filter(lectureUnit -> !(lectureUnit instanceof ExerciseUnit)).collect(Collectors.toSet());
         var exercises = lectureUnits.stream().filter(lectureUnit -> lectureUnit instanceof ExerciseUnit).map(lectureUnit -> ((ExerciseUnit) lectureUnit).getExercise())
                 .collect(Collectors.toSet());
-        // Normally we would need to merge with existing relations between learning goals and exercises
-        // We can skip this for now, as this endpoint is currently the only way to manipulate the relations
+
         existingLearningGoal.setLectureUnits(lectureUnitsWithoutExercises);
         existingLearningGoal.setExercises(exercises);
 

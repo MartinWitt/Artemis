@@ -5,8 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
+import java.util.stream.Stream;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.validation.constraints.NotNull;
 
@@ -15,16 +15,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import de.tum.in.www1.artemis.domain.*;
 import de.tum.in.www1.artemis.domain.lecture.ExerciseUnit;
 import de.tum.in.www1.artemis.domain.lecture.LectureUnit;
 import de.tum.in.www1.artemis.domain.lecture.LectureUnitCompletion;
-import de.tum.in.www1.artemis.domain.scores.StudentScore;
+import de.tum.in.www1.artemis.domain.scores.ParticipantScore;
 import de.tum.in.www1.artemis.repository.*;
 import de.tum.in.www1.artemis.security.SecurityUtils;
+import de.tum.in.www1.artemis.service.util.RoundingUtil;
 
 @Service
 @Profile("scheduling")
@@ -40,7 +40,9 @@ public class LearningGoalProgressScheduleService {
 
     private final LearningGoalProgressRepository learningGoalProgressRepository;
 
-    private final ParticipantScoreRepository participantScoreRepository;
+    private final StudentScoreRepository studentScoreRepository;
+
+    private final TeamScoreRepository teamScoreRepository;
 
     private final ExerciseRepository exerciseRepository;
 
@@ -49,12 +51,13 @@ public class LearningGoalProgressScheduleService {
     private final UserRepository userRepository;
 
     public LearningGoalProgressScheduleService(@Qualifier("taskScheduler") TaskScheduler scheduler, LearningGoalRepository learningGoalRepository,
-            LearningGoalProgressRepository learningGoalProgressRepository, ParticipantScoreRepository participantScoreRepository, ExerciseRepository exerciseRepository,
-            LectureUnitRepository lectureUnitRepository, UserRepository userRepository) {
+            LearningGoalProgressRepository learningGoalProgressRepository, StudentScoreRepository studentScoreRepository, TeamScoreRepository teamScoreRepository,
+            ExerciseRepository exerciseRepository, LectureUnitRepository lectureUnitRepository, UserRepository userRepository) {
         this.scheduler = scheduler;
         this.learningGoalRepository = learningGoalRepository;
         this.learningGoalProgressRepository = learningGoalProgressRepository;
-        this.participantScoreRepository = participantScoreRepository;
+        this.studentScoreRepository = studentScoreRepository;
+        this.teamScoreRepository = teamScoreRepository;
         this.exerciseRepository = exerciseRepository;
         this.lectureUnitRepository = lectureUnitRepository;
         this.userRepository = userRepository;
@@ -69,14 +72,6 @@ public class LearningGoalProgressScheduleService {
     }
 
     /**
-     * Schedule all outdated participant scores when the service is started.
-     */
-    @PostConstruct
-    public void startup() {
-        scheduleTasks();
-    }
-
-    /**
      * Before shutdown, cancel all running or scheduled tasks.
      */
     @PreDestroy
@@ -88,19 +83,15 @@ public class LearningGoalProgressScheduleService {
         scheduledTasks.clear();
     }
 
-    @Scheduled(cron = "0 * * * * *")
-    protected void scheduleTasks() {
-        logger.info("Schedule tasks to process...");
-        SecurityUtils.setAuthorizationObject();
-
-        /*
-         * var progressItemsToProcess = learningGoalProgressRepository.findAllInvalid(); progressItemsToProcess.forEach(learningGoalProgress -> {
-         * this.scheduleTask(learningGoalProgress.getLearningGoal().getId(), learningGoalProgress.getUser().getId()); });
-         * logger.info("Scheduled processing of {} outdated learning goal progress items.", progressItemsToProcess.size());
-         */
+    public void updateLearningGoalProgressForExercise(@NotNull Long exerciseId, @NotNull Long userId) {
+        this.scheduleTask(LearningObjectType.EXERCISE, exerciseId, userId);
     }
 
-    public void scheduleTask(LearningObjectType learningObject, Long learningObjectId, Long userId) {
+    public void updateLearningGoalProgressForLectureUnit(@NotNull Long lectureUnitId, @NotNull Long userId) {
+        this.scheduleTask(LearningObjectType.LECTURE_UNIT, lectureUnitId, userId);
+    }
+
+    protected void scheduleTask(LearningObjectType learningObject, Long learningObjectId, Long userId) {
         final int progressHash = new LearningGoalProgressId(learningObject, learningObjectId, userId).hashCode();
         var scheduledFuture = scheduledTasks.get(progressHash);
         if (scheduledFuture != null) {
@@ -115,18 +106,6 @@ public class LearningGoalProgressScheduleService {
         logger.info("Schedule task to update progress for learning object {} and user {} at {}.", learningObjectId, userId, schedulingTime);
     }
 
-    public void invalidateLearningGoalProgressForExercise(@NotNull Long exerciseId, @NotNull Long userId) {
-        //
-        // exercise.getLearningGoals().forEach(learningGoal -> scheduleTask(learningGoal.getId(), userId));
-        this.scheduleTask(LearningObjectType.EXERCISE, exerciseId, userId);
-    }
-
-    public void invalidateLearningGoalProgressForLectureUnit(@NotNull Long lectureUnitId, @NotNull Long userId) {
-        //
-        // lectureUnit.getLearningGoals().forEach(learningGoal -> scheduleTask(learningGoal.getId(), userId));
-        this.scheduleTask(LearningObjectType.LECTURE_UNIT, lectureUnitId, userId);
-    }
-
     private void executeTask(LearningObjectType learningObject, Long learningObjectId, Long userId) {
         long start = System.currentTimeMillis();
         logger.info("Learning goal progress task for learning goal {} and user {} started", learningObjectId, userId);
@@ -135,14 +114,17 @@ public class LearningGoalProgressScheduleService {
 
             Set<LearningGoal> learningGoals;
             if (learningObject == LearningObjectType.EXERCISE) {
-                var exercise = exerciseRepository.findByIdWithLearningGoalsElseThrow(learningObjectId);
-                learningGoals = exercise.getLearningGoals();
+                learningGoals = exerciseRepository.findByIdWithLearningGoals(learningObjectId).map(Exercise::getLearningGoals).orElse(null);
             }
             else if (learningObject == LearningObjectType.LECTURE_UNIT) {
-                var lectureUnit = lectureUnitRepository.findByIdWithLearningGoalsElseThrow(learningObjectId);
-                learningGoals = lectureUnit.getLearningGoals();
+                learningGoals = lectureUnitRepository.findByIdWithLearningGoals(learningObjectId).map(LectureUnit::getLearningGoals).orElse(null);
             }
             else {
+                return;
+            }
+
+            if (learningGoals == null) {
+                // Learning goals couldn't be loaded, the exercise/lecture unit might have already been deleted
                 return;
             }
 
@@ -161,8 +143,14 @@ public class LearningGoalProgressScheduleService {
     }
 
     private void updateLearningGoalProgress(Long learningGoalId, Long userId) {
-        var user = userRepository.findByIdElseThrow(userId);
-        var learningGoal = learningGoalRepository.findByIdWithLectureUnitsAndCompletions(learningGoalId).get();
+        var user = userRepository.findById(userId).orElse(null);
+        var learningGoal = learningGoalRepository.findByIdWithExercisesAndLectureUnitsAndCompletions(learningGoalId).orElse(null);
+
+        if (user == null || learningGoal == null) {
+            // If the user or learning goal no longer exist, there is nothing to do
+            return;
+        }
+
         var progress = learningGoalProgressRepository.findEagerByLearningGoalIdAndUserId(learningGoalId, userId).orElse(new LearningGoalProgress());
 
         List<ILearningObject> learningObjects = new ArrayList<>();
@@ -170,39 +158,38 @@ public class LearningGoalProgressScheduleService {
         List<LectureUnit> allLectureUnits = learningGoal.getLectureUnits().stream().filter(LectureUnit::isVisibleToStudents).toList();
 
         List<LectureUnit> lectureUnits = allLectureUnits.stream().filter(lectureUnit -> !(lectureUnit instanceof ExerciseUnit)).toList();
-
-        List<Exercise> exercises = allLectureUnits.stream().filter(lectureUnit -> lectureUnit instanceof ExerciseUnit)
-                .map(exerciseUnit -> ((ExerciseUnit) exerciseUnit).getExercise()).toList();
-        // learningGoal.getExercises().stream().filter(Exercise::isVisibleToStudents).toList();
+        List<Exercise> exercises = learningGoal.getExercises().stream().filter(Exercise::isVisibleToStudents).toList();
 
         learningObjects.addAll(lectureUnits);
         learningObjects.addAll(exercises);
 
         progress.setLearningGoal(learningGoal);
         progress.setUser(user);
-        progress.setProgress(calculateProgress(learningObjects, user));
-        progress.setConfidence(calculateConfidence(exercises, user));
+        progress.setProgress(RoundingUtil.roundScoreSpecifiedByCourseSettings(calculateProgress(learningObjects, user), learningGoal.getCourse()));
+        progress.setConfidence(RoundingUtil.roundScoreSpecifiedByCourseSettings(calculateConfidence(exercises, user), learningGoal.getCourse()));
         learningGoalProgressRepository.save(progress);
     }
 
     private double calculateProgress(List<ILearningObject> learningObjects, User user) {
         var completions = learningObjects.stream().map(ILearningObject -> hasUserCompleted(user, ILearningObject)).toList();
         completions.forEach(completed -> logger.debug("{} completed {}", user.getLogin(), completed));
-        return completions.stream().mapToInt(completed -> completed ? 1 : 0).summaryStatistics().getAverage();
+        return completions.stream().mapToInt(completed -> completed ? 100 : 0).summaryStatistics().getAverage();
     }
 
     private double calculateConfidence(List<Exercise> exercises, User user) {
-        var scores = participantScoreRepository.findAverageScoreForExercises(exercises);
-        return scores.stream().mapToDouble(score -> (double) score.get("averageScore")).sum() / 100;
+        var studentScores = studentScoreRepository.findAllByExercisesAndUser(exercises, user);
+        var teamScores = teamScoreRepository.findAllByExercisesAndUser(exercises, user);
+        return Stream.concat(studentScores.stream(), teamScores.stream()).map(ParticipantScore::getLastRatedScore).mapToDouble(score -> score).summaryStatistics().getAverage();
     }
 
-    private boolean hasUserCompleted(User user, ILearningObject ILearningObject) {
-        if (ILearningObject instanceof LectureUnit) {
-            return ((LectureUnit) ILearningObject).getCompletedUsers().stream().map(LectureUnitCompletion::getUser).anyMatch(user1 -> user1.getId().equals(user.getId()));
+    private boolean hasUserCompleted(User user, ILearningObject learningObject) {
+        if (learningObject instanceof LectureUnit lectureUnit) {
+            return lectureUnit.getCompletedUsers().stream().map(LectureUnitCompletion::getUser).anyMatch(user1 -> user1.getId().equals(user.getId()));
         }
-        else if (ILearningObject instanceof Exercise) {
-            return participantScoreRepository.findAllByExercise(((Exercise) ILearningObject)).stream().map(score -> ((StudentScore) score).getUser())
-                    .anyMatch(user1 -> user1.getId().equals(user.getId()));
+        else if (learningObject instanceof Exercise exercise) {
+            var studentScores = studentScoreRepository.findAllByExercisesAndUser(List.of(exercise), user);
+            var teamScores = teamScoreRepository.findAllByExercisesAndUser(List.of(exercise), user);
+            return Stream.concat(studentScores.stream(), teamScores.stream()).findAny().isPresent();
         }
         throw new IllegalArgumentException("Completable must be either LectureUnit or Exercise");
     }

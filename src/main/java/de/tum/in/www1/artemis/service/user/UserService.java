@@ -76,6 +76,8 @@ public class UserService {
 
     private final StudentScoreRepository studentScoreRepository;
 
+    private final LearningGoalProgressRepository learningGoalProgressRepository;
+
     private final CacheManager cacheManager;
 
     private final AuthorityRepository authorityRepository;
@@ -93,7 +95,8 @@ public class UserService {
     public UserService(UserCreationService userCreationService, UserRepository userRepository, AuthorityService authorityService, AuthorityRepository authorityRepository,
             CacheManager cacheManager, Optional<LdapUserService> ldapUserService, GuidedTourSettingsRepository guidedTourSettingsRepository, PasswordService passwordService,
             Optional<VcsUserManagementService> optionalVcsUserManagementService, Optional<CIUserManagementService> optionalCIUserManagementService,
-            ArtemisAuthenticationProvider artemisAuthenticationProvider, StudentScoreRepository studentScoreRepository, InstanceMessageSendService instanceMessageSendService,
+            ArtemisAuthenticationProvider artemisAuthenticationProvider, StudentScoreRepository studentScoreRepository,
+            LearningGoalProgressRepository learningGoalProgressRepository, InstanceMessageSendService instanceMessageSendService,
             ExerciseHintActivationRepository exerciseHintActivationRepository, TutorialGroupRegistrationRepository tutorialGroupRegistrationRepository,
             TutorialGroupRepository tutorialGroupRepository) {
         this.userCreationService = userCreationService;
@@ -108,6 +111,7 @@ public class UserService {
         this.optionalCIUserManagementService = optionalCIUserManagementService;
         this.artemisAuthenticationProvider = artemisAuthenticationProvider;
         this.studentScoreRepository = studentScoreRepository;
+        this.learningGoalProgressRepository = learningGoalProgressRepository;
         this.instanceMessageSendService = instanceMessageSendService;
         this.exerciseHintActivationRepository = exerciseHintActivationRepository;
         this.tutorialGroupRegistrationRepository = tutorialGroupRegistrationRepository;
@@ -447,6 +451,7 @@ public class UserService {
         // 12) Set teaching assistant to null for all tutorial groups taught by the user
 
         studentScoreRepository.deleteAllByUserId(user.getId());
+        learningGoalProgressRepository.deleteAllByUserId(user.getId());
         exerciseHintActivationRepository.deleteAllByUser(user);
 
         tutorialGroupRegistrationRepository.deleteAllByStudent(user);
