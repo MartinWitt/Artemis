@@ -90,7 +90,7 @@ export class LearningGoalManagementComponent implements OnInit, OnDestroy {
     }
 
     getLearningGoalCourseProgress(learningGoal: LearningGoal): number {
-        return this.learningGoalIdToLearningGoalCourseProgress.get(learningGoal.id!)!.averageScoreAchievedInLearningGoal;
+        return this.learningGoalIdToLearningGoalCourseProgress.get(learningGoal.id!)?.averageScoreAchievedInLearningGoal || 0;
     }
 
     loadData() {

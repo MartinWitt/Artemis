@@ -46,45 +46,28 @@ describe('LearningGoalCardComponent', () => {
     it('should display progress bar when progress is available', () => {
         const learningGoal = new LearningGoal();
         learningGoal.id = 1;
-        const learningGoalProgress = new IndividualLearningGoalProgress();
-        learningGoalProgress.studentId = 1;
-        learningGoalProgress.learningGoalId = 1;
-        learningGoalProgress.pointsAchievedByStudentInLearningGoal = 5;
-        learningGoalProgress.totalPointsAchievableByStudentsInLearningGoal = 10;
 
         learningGoalCardComponent.learningGoal = learningGoal;
-        learningGoalCardComponent.learningGoalProgress = learningGoalProgress;
+        learningGoalCardComponent.progress = 70;
 
         learningGoalCardComponentFixture.detectChanges();
 
         expect(learningGoalCardComponent.isProgressAvailable).toBeTrue();
         const circularProgress = learningGoalCardComponentFixture.debugElement.query(By.directive(CircularProgressBarStubComponent)).componentInstance;
         expect(circularProgress).toBeDefined();
-        expect(circularProgress.progressInPercent).toBe(50);
+        expect(circularProgress.progressInPercent).toBe(70);
     });
 
     it('should not display progress bar when progress is not available', () => {
         const learningGoal = new LearningGoal();
         learningGoal.id = 1;
         learningGoalCardComponent.learningGoal = learningGoal;
+        learningGoalCardComponent.isPrerequisite = true;
 
         learningGoalCardComponentFixture.detectChanges();
 
         expect(learningGoalCardComponent.isProgressAvailable).toBeFalse();
         const circularProgress = learningGoalCardComponentFixture.debugElement.query(By.directive(CircularProgressBarStubComponent));
         expect(circularProgress).toBeNull();
-    });
-
-    it('should open learning details modal when card is clicked', () => {
-        const learningGoal = new LearningGoal();
-        learningGoal.id = 1;
-        learningGoalCardComponent.learningGoal = learningGoal;
-        learningGoalCardComponentFixture.detectChanges();
-
-        const card = learningGoalCardComponentFixture.debugElement.nativeElement.querySelector('.course-goal-card');
-        const modalService = TestBed.inject(NgbModal);
-        const openSpy = jest.spyOn(modalService, 'open');
-        card.click();
-        expect(openSpy).toHaveBeenCalledOnce();
     });
 });

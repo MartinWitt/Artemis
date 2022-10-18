@@ -39,10 +39,13 @@ export class CourseLearningGoalsComponent implements OnInit {
         if (this.course && this.course.learningGoals && this.course.prerequisites) {
             this.learningGoals = this.course.learningGoals;
             this.prerequisites = this.course.prerequisites;
-            this.loadData();
         } else {
             this.loadData();
         }
+    }
+
+    getProgressOfLearningGoal(learningGoal: LearningGoal): number {
+        return learningGoal.userProgress?.first()?.progress || 0;
     }
 
     /**

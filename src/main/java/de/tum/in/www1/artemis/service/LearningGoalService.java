@@ -52,24 +52,13 @@ public class LearningGoalService {
     }
 
     /**
-     * Get all learning goals for a course, including the visible lecture units for the user.
+     * Get all learning goals for a course, including the progress for the user.
      * @param course The course for which the learning goals should be retrieved.
      * @param user The user for whom to filter the visible lecture units attached to the learning goal.
      * @return A list of learning goals with their lecture units (filtered for the user).
      */
     public Set<LearningGoal> findAllForCourse(@NotNull Course course, @NotNull User user) {
-        Set<LearningGoal> learningGoals = learningGoalRepository.findAllByCourseIdWithLectureUnitsUnidirectional(course.getId());
-        // TODO: Move the loading of lecture units to its own endpoint
-        learningGoals.forEach(learningGoal -> {
-            learningGoal.setLectureUnits(new HashSet<>(lectureUnitRepository.findAllByLearningGoalId(learningGoal.getId())));
-        });
-        // if the user is a student the not yet released lecture units need to be filtered out
-        if (authCheckService.isOnlyStudentInCourse(course, user)) {
-            learningGoals.forEach(learningGoal -> {
-                learningGoal.getLectureUnits().removeIf(lectureUnit -> !lectureUnit.isVisibleToStudents());
-            });
-        }
-        return learningGoals;
+        return learningGoalRepository.findAllForCourseWithProgressForUser(course.getId(), user.getId());
     }
 
     /**
