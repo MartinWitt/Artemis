@@ -60,20 +60,4 @@ describe('LearningGoalCourseDetailModalComponent', () => {
         learningGoalCourseDetailModalFixture.detectChanges();
         expect(learningGoalCourseDetailModal).toBeDefined();
     });
-
-    it('should call sort service', fakeAsync(() => {
-        const learningGoal = new LearningGoal();
-        learningGoal.lectureUnits = [new TextUnit(), new VideoUnit()];
-        const learningGoalCourseProgress = new CourseLearningGoalProgress();
-        learningGoalCourseProgress.totalPointsAchievableByStudentsInLearningGoal = 10;
-        learningGoalCourseProgress.averagePointsAchievedByStudentInLearningGoal = 5;
-        learningGoalCourseProgress.progressInLectureUnits = [new CourseLectureUnitProgress(), new CourseLectureUnitProgress()];
-        learningGoalCourseDetailModal.learningGoal = learningGoal;
-        learningGoalCourseDetailModal.learningGoalCourseProgress = learningGoalCourseProgress;
-        learningGoalCourseDetailModalFixture.detectChanges();
-        const sortService = TestBed.inject(SortService);
-        const sortByPropertySpy = jest.spyOn(sortService, 'sortByProperty');
-        learningGoalCourseDetailModal.sortConnectedLectureUnits();
-        expect(sortByPropertySpy).toHaveBeenCalledOnce();
-    }));
 });
