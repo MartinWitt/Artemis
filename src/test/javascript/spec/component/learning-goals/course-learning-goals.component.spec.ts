@@ -6,7 +6,6 @@ import { of } from 'rxjs';
 import { LearningGoal, LearningGoalProgress } from 'app/entities/learningGoal.model';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from 'app/core/util/alert.service';
-import { IndividualLearningGoalProgress } from 'app/course/learning-goals/learning-goal-individual-progress-dtos.model';
 import { Component, Input } from '@angular/core';
 import { CourseLearningGoalsComponent } from 'app/overview/course-learning-goals/course-learning-goals.component';
 import { HttpResponse } from '@angular/common/http';
@@ -14,7 +13,6 @@ import { By } from '@angular/platform-browser';
 import { TextUnit } from 'app/entities/lecture-unit/textUnit.model';
 import { AccountService } from 'app/core/auth/account.service';
 import { User } from 'app/core/user/user.model';
-import * as Sentry from '@sentry/browser';
 import { CourseScoreCalculationService } from 'app/overview/course-score-calculation.service';
 import { Course } from 'app/entities/course.model';
 
