@@ -140,13 +140,13 @@ public class InstanceMessageReceiveService {
             SecurityUtils.setAuthorizationObject();
             processScheduleParticipantScore(message.getMessageObject()[0], message.getMessageObject()[1], message.getMessageObject()[2]);
         });
-        hazelcastInstance.<Long[]>getTopic("invalidate-progress-exercise").addMessageListener(message -> {
+        hazelcastInstance.<Long[]>getTopic("schedule-progress-exercise").addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
-            processProgressInvalidForExercise(message.getMessageObject()[0], message.getMessageObject()[1]);
+            processProgressUpdateForExercise(message.getMessageObject()[0], message.getMessageObject()[1]);
         });
-        hazelcastInstance.<Long[]>getTopic("invalidate-progress-lecture-unit").addMessageListener(message -> {
+        hazelcastInstance.<Long[]>getTopic("schedule-progress-lecture-unit").addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
-            processProgressInvalidForLectureUnit(message.getMessageObject()[0], message.getMessageObject()[1]);
+            processProgressUpdateForLectureUnit(message.getMessageObject()[0], message.getMessageObject()[1]);
         });
     }
 
@@ -252,11 +252,11 @@ public class InstanceMessageReceiveService {
         participantScoreScheduleService.scheduleTask(exerciseId, participantId, resultIdToBeDeleted);
     }
 
-    public void processProgressInvalidForExercise(Long exerciseId, Long userId) {
+    public void processProgressUpdateForExercise(Long exerciseId, Long userId) {
         learningGoalProgressScheduleService.updateLearningGoalProgressForExercise(exerciseId, userId);
     }
 
-    public void processProgressInvalidForLectureUnit(Long lectureUnitId, Long userId) {
+    public void processProgressUpdateForLectureUnit(Long lectureUnitId, Long userId) {
         learningGoalProgressScheduleService.updateLearningGoalProgressForLectureUnit(lectureUnitId, userId);
     }
 }

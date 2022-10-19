@@ -179,7 +179,7 @@ public class LearningGoalProgressScheduleService {
     private double calculateConfidence(List<Exercise> exercises, User user) {
         var studentScores = studentScoreRepository.findAllByExercisesAndUser(exercises, user);
         var teamScores = teamScoreRepository.findAllByExercisesAndUser(exercises, user);
-        return Stream.concat(studentScores.stream(), teamScores.stream()).map(ParticipantScore::getLastRatedScore).mapToDouble(score -> score).summaryStatistics().getAverage();
+        return Stream.concat(studentScores.stream(), teamScores.stream()).map(ParticipantScore::getLastScore).mapToDouble(score -> score).summaryStatistics().getAverage();
     }
 
     private boolean hasUserCompleted(User user, ILearningObject learningObject) {
