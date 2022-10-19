@@ -41,7 +41,7 @@ public class ParticipantScoreListener {
      */
     @PostUpdate
     @PostPersist
-    public void createOrUpdateAssociatedParticipantScore(ParticipantScore participantScore) {
+    public void createOrUpdateParticipantScore(ParticipantScore participantScore) {
         Set<User> users = new HashSet<>();
         if (participantScore instanceof StudentScore) {
             users.add(((StudentScore) participantScore).getUser());

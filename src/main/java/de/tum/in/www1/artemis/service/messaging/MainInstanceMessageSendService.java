@@ -109,11 +109,11 @@ public class MainInstanceMessageSendService implements InstanceMessageSendServic
 
     @Override
     public void sendProgressUpdateForExercise(Long exerciseId, Long userId) {
-        instanceMessageReceiveService.processProgressInvalidForExercise(exerciseId, userId);
+        instanceMessageReceiveService.processProgressUpdateForExercise(exerciseId, userId);
     }
 
     @Override
     public void sendProgressUpdateForLectureUnit(Long lectureUnitId, Long userId) {
-        instanceMessageReceiveService.processProgressInvalidForLectureUnit(lectureUnitId, userId);
+        instanceMessageReceiveService.processProgressUpdateForLectureUnit(lectureUnitId, userId);
     }
 }

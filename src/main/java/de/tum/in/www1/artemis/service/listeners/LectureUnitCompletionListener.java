@@ -37,7 +37,7 @@ public class LectureUnitCompletionListener {
     @PostUpdate
     @PostPersist
     @PostRemove
-    public void removeOrUpdateAssociatedParticipantScore(LectureUnitCompletion completion) {
+    public void modifyOrRemoveLectureUnitCompletion(LectureUnitCompletion completion) {
         instanceMessageSendService.sendProgressUpdateForLectureUnit(completion.getLectureUnit().getId(), completion.getUser().getId());
     }
 
