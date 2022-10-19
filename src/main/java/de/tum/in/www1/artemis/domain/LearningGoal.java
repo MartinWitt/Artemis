@@ -9,6 +9,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import de.tum.in.www1.artemis.domain.lecture.ExerciseUnit;
 import de.tum.in.www1.artemis.domain.lecture.LectureUnit;
@@ -31,6 +32,7 @@ public class LearningGoal extends DomainObject {
      */
     @Column(name = "taxonomy")
     @Convert(converter = LearningGoalTaxonomy.TaxonomyConverter.class)
+    @JsonInclude
     private LearningGoalTaxonomy taxonomy;
 
     @ManyToOne
