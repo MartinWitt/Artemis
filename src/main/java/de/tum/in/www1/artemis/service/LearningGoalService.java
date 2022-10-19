@@ -17,37 +17,10 @@ public class LearningGoalService {
 
     private final LearningGoalRepository learningGoalRepository;
 
-    private final LearningGoalProgressRepository learningGoalProgressRepository;
-
-    private final LectureUnitRepository lectureUnitRepository;
-
-    private final StudentParticipationRepository studentParticipationRepository;
-
-    private final ExerciseRepository exerciseRepository;
-
-    private final StudentScoreRepository studentScoreRepository;
-
-    private final TeamScoreRepository teamScoreRepository;
-
-    private final CourseRepository courseRepository;
-
-    private final UserRepository userRepository;
-
     private final AuthorizationCheckService authCheckService;
 
-    public LearningGoalService(LearningGoalRepository learningGoalRepository, LearningGoalProgressRepository learningGoalProgressRepository,
-            LectureUnitRepository lectureUnitRepository, StudentParticipationRepository studentParticipationRepository, ExerciseRepository exerciseRepository,
-            StudentScoreRepository studentScoreRepository, TeamScoreRepository teamScoreRepository, CourseRepository courseRepository, UserRepository userRepository,
-            AuthorizationCheckService authCheckService) {
+    public LearningGoalService(LearningGoalRepository learningGoalRepository, AuthorizationCheckService authCheckService) {
         this.learningGoalRepository = learningGoalRepository;
-        this.learningGoalProgressRepository = learningGoalProgressRepository;
-        this.lectureUnitRepository = lectureUnitRepository;
-        this.studentParticipationRepository = studentParticipationRepository;
-        this.exerciseRepository = exerciseRepository;
-        this.studentScoreRepository = studentScoreRepository;
-        this.teamScoreRepository = teamScoreRepository;
-        this.courseRepository = courseRepository;
-        this.userRepository = userRepository;
         this.authCheckService = authCheckService;
     }
 
@@ -69,11 +42,9 @@ public class LearningGoalService {
      */
     public Set<LearningGoal> findAllPrerequisitesForCourse(@NotNull Course course, @NotNull User user) {
         Set<LearningGoal> prerequisites = learningGoalRepository.findPrerequisitesByCourseId(course.getId());
-        // Remove all lecture units if not a user of the course
-        if (!authCheckService.isAtLeastStudentInCourse(course, user)) {
-            for (LearningGoal prerequisite : prerequisites) {
-                prerequisite.setLectureUnits(Collections.emptySet());
-            }
+        // Remove all lecture units
+        for (LearningGoal prerequisite : prerequisites) {
+            prerequisite.setLectureUnits(Collections.emptySet());
         }
         return prerequisites;
     }

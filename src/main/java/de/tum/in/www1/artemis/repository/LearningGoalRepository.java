@@ -39,17 +39,6 @@ public interface LearningGoalRepository extends JpaRepository<LearningGoal, Long
     @Query("""
             SELECT learningGoal
             FROM LearningGoal learningGoal
-            LEFT JOIN FETCH learningGoal.lectureUnits lu
-            WHERE learningGoal.course.id = :courseId
-            ORDER BY learningGoal.title
-            """)
-    Set<LearningGoal> findAllByCourseIdWithLectureUnitsUnidirectional(@Param("courseId") Long courseId);
-
-    Set<LearningGoal> findAllByExercises(Long exerciseId);
-
-    @Query("""
-            SELECT learningGoal
-            FROM LearningGoal learningGoal
             LEFT JOIN FETCH learningGoal.exercises ex
             WHERE learningGoal.id = :#{#learningGoalId}
             """)
