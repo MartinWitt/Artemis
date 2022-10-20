@@ -30,7 +30,7 @@ public interface LearningGoalRepository extends JpaRepository<LearningGoal, Long
     @Query("""
             SELECT learningGoal
             FROM LearningGoal learningGoal
-            LEFT OUTER JOIN FETCH learningGoal.userProgress progress
+            LEFT JOIN FETCH learningGoal.userProgress progress
             WHERE learningGoal.course.id = :courseId
             AND (progress.user IS NULL OR progress.user.id = :userId)
             """)
