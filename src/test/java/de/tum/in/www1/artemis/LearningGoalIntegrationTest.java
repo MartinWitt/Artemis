@@ -550,7 +550,7 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
         CourseLearningGoalProgress courseLearningGoalProgress = request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/course-progress", HttpStatus.OK,
                 CourseLearningGoalProgress.class);
 
-        assertThat(courseLearningGoalProgress.averageScoreAchievedInLearningGoal).isEqualTo(60.0);
+        assertThat(courseLearningGoalProgress.averageScoreAchievedInLearningGoal).isEqualTo(27.7);
     }
 
     @Test
@@ -580,7 +580,7 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
         CourseLearningGoalProgress courseLearningGoalProgress = request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/course-progress", HttpStatus.OK,
                 CourseLearningGoalProgress.class);
 
-        assertThat(courseLearningGoalProgress.averageScoreAchievedInLearningGoal).isEqualTo(45.0);
+        assertThat(courseLearningGoalProgress.averageScoreAchievedInLearningGoal).isEqualTo(27.5);
     }
 
     private void cleanUpInitialParticipations() {

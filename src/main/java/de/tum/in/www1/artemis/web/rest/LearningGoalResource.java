@@ -24,6 +24,7 @@ import de.tum.in.www1.artemis.repository.*;
 import de.tum.in.www1.artemis.security.Role;
 import de.tum.in.www1.artemis.service.AuthorizationCheckService;
 import de.tum.in.www1.artemis.service.LearningGoalService;
+import de.tum.in.www1.artemis.service.util.RoundingUtil;
 import de.tum.in.www1.artemis.web.rest.dto.CourseLearningGoalProgress;
 import de.tum.in.www1.artemis.web.rest.dto.PageableSearchDTO;
 import de.tum.in.www1.artemis.web.rest.dto.SearchResultPageDTO;
@@ -76,20 +77,20 @@ public class LearningGoalResource {
      *
      * @param courseId                 the id of the course to which the learning goal belongs
      * @param learningGoalId           the id of the learning goal for which to get the progress
-     * @param useParticipantScoreTable use the participant score table instead of going through participation -> submission -> result
      * @return the ResponseEntity with status 200 (OK) and with the learning goal course performance in the body
      */
     @GetMapping("/courses/{courseId}/goals/{learningGoalId}/course-progress")
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    public ResponseEntity<CourseLearningGoalProgress> getLearningGoalProgressOfCourse(@PathVariable Long learningGoalId, @PathVariable Long courseId,
-            @RequestParam(defaultValue = "false", required = false) boolean useParticipantScoreTable) {
+    public ResponseEntity<CourseLearningGoalProgress> getLearningGoalProgressOfCourse(@PathVariable Long learningGoalId, @PathVariable Long courseId) {
         log.debug("REST request to get course progress for LearningGoal : {}", learningGoalId);
-        var learningGoal = findLearningGoal(Role.INSTRUCTOR, learningGoalId, courseId, true, true);
+        var course = courseRepository.findByIdElseThrow(courseId);
+        var learningGoal = findLearningGoal(Role.INSTRUCTOR, learningGoalId, course.getId(), true, true);
         CourseLearningGoalProgress courseLearningGoalProgress = new CourseLearningGoalProgress();
         courseLearningGoalProgress.courseId = courseId;
         courseLearningGoalProgress.learningGoalId = learningGoalId;
         courseLearningGoalProgress.learningGoalTitle = learningGoal.getTitle();
-        courseLearningGoalProgress.averageScoreAchievedInLearningGoal = learningGoalProgressRepository.findAverageConfidenceByLearningGoalId(learningGoalId).orElse(0.0);
+        courseLearningGoalProgress.averageScoreAchievedInLearningGoal = RoundingUtil
+                .roundScoreSpecifiedByCourseSettings(learningGoalProgressRepository.findAverageConfidenceByLearningGoalId(learningGoalId).orElse(0.0), course);
         return ResponseEntity.ok().body(courseLearningGoalProgress);
     }
 
