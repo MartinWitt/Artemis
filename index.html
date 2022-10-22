@@ -327,23 +327,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/setup/">Setup Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dev/setup/#mysql-setup">MySQL Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/#set-empty-root-password-for-mysql-8">Set empty root password for MySQL 8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#users-for-mysql">Users for MySQL</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dev/setup/#server-setup">Server Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/bamboo-bitbucket-jira/">Bamboo, Bitbucket and Jira</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/jenkins-gitlab/">Jenkins and Gitlab</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/common-problems/">Common setup problems</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/distributed/">Multiple instances</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/programming-exercises/">Adjustments for programming exercises</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/programming-exercises/#caching-example-for-maven">Caching example for Maven</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/kubernetes/">Kubernetes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dev/setup/#run-the-server-via-a-service-configuration">Run the server via a service configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dev/setup/#run-the-server-via-docker">Run the server via Docker</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dev/setup/#run-the-server-via-a-run-configuration-in-intellij">Run the server via a run configuration in IntelliJ</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dev/setup/#run-the-server-with-spring-boot-and-spring-profiles">Run the server with Spring Boot and Spring profiles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="dev/setup/#run-the-server-with-the-command-line-gradle-wrapper">Run the server with the command line (Gradle wrapper)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/#configure-text-assessment-analytics-service">Configure Text Assessment Analytics Service:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#configure-text-assessment-analytics-service">Configure Text Assessment Analytics Service</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dev/setup/#client-setup">Client Setup</a><ul>
@@ -352,9 +345,29 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dev/setup/#customize-your-artemis-instance">Customize your Artemis instance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev/setup/#alternative-using-docker-compose">Alternative: Using docker-compose</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/#get-a-shell-into-the-containers">Get a shell into the containers:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/#other-useful-commands">Other useful commands:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev/setup/#programming-exercise-adjustments">Programming Exercise adjustments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#path-variables">Path variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#templates">Templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#caching-example-for-maven">Caching example for Maven</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev/setup/#bamboo-bitbucket-and-jira-setup">Bamboo, Bitbucket and Jira Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#docker-compose">Docker-Compose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#configure-bamboo-bitbucket-and-jira">Configure Bamboo, Bitbucket and Jira</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#configure-artemis">Configure Artemis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#how-to-verify-the-connection-works">How to verify the connection works?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev/setup/#jenkins-and-gitlab-setup">Jenkins and GitLab Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#artemis">Artemis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#gitlab">GitLab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#jenkins">Jenkins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#build-agents">Build agents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#jenkins-user-management">Jenkins User Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#jenkins-build-plan-access-control-configuration">Jenkins Build Plan Access Control Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#caching">Caching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#separate-nginx-configurations">Separate NGINX Configurations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#deployment-artemis-gitlab-jenkins-using-docker-on-local-machine">Deployment Artemis / GitLab / Jenkins using Docker on Local machine</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dev/setup/#athene-service">Athene Service</a><ul>
@@ -364,7 +377,48 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="dev/setup/#apollon-service">Apollon Service</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="dev/setup/#enable-the-apollon-spring-profile">Enable the <code class="docutils literal notranslate"><span class="pre">apollon</span></code> Spring profile:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev/setup/#id1">Configure API Endpoints:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#id7">Configure API Endpoints:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev/setup/#common-setup-problems">Common Setup Problems</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#general-setup-problems">General Setup Problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#programming-exercise-setup">Programming Exercise Setup</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev/setup/#multiple-artemis-instances">Multiple Artemis instances</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#setup-with-one-instance">Setup with one instance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#setup-with-multiple-instances">Setup with multiple instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#additional-synchronization">Additional synchronization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#database-cache">Database cache</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#discovery-service">Discovery service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#setup">Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#websockets">WebSockets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#file-system">File system</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#scheduling">Scheduling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#nginx-configuration">nginx configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev/setup/#alternative-docker-compose-setup">Alternative: Docker-Compose Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#get-a-shell-into-the-containers">Get a shell into the containers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#other-useful-commands">Other useful commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev/setup/#alternative-kubernetes-setup">Alternative: Kubernetes Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#setup-kubernetes-cluster">Setup Kubernetes Cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#create-dockerhub-repository">Create DockerHub Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#configure-docker-id-username">Configure Docker ID (username)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#configure-artemis-resources">Configure Artemis Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#build-artemis">Build Artemis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#run-docker-build">Run Docker Build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#push-to-docker">Push to Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#configure-spring-profiles">Configure Spring Profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#deploy-kubernetes-resources">Deploy Kubernetes Resources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#add-edit-secrets">Add/Edit Secrets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#check-the-deployments-in-rancher">Check the Deployments in Rancher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#check-out-the-logs">Check out the Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev/setup/#set-additional-environment-variables">Set Additional Environment Variables</a></li>
 </ul>
 </li>
 </ul>
