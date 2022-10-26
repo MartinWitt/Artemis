@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
-@ActiveProfiles({ SPRING_PROFILE_TEST, "artemis", "bamboo", "bitbucket", "jira" }) // no scheduling
+@ActiveProfiles({ SPRING_PROFILE_TEST, "artemis", "bamboo", "bitbucket", "jira", "ldap", "athene", "apollon" }) // no scheduling
 // Todo: Find a way to test this class including the "distributed" Hazelcast setup
 class DistributedInstanceMessageSendServiceTest {
 
