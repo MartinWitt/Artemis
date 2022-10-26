@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 @AutoConfigureTestDatabase
 @ActiveProfiles({ SPRING_PROFILE_TEST, "artemis", "bamboo", "bitbucket", "jira" }) // no scheduling
 // Todo: Find a way to test this class including the "distributed" Hazelcast setup
-public class DistributedInstanceMessageSendServiceTest {
+class DistributedInstanceMessageSendServiceTest {
 
     @SpyBean
     DistributedInstanceMessageSendService sendService;

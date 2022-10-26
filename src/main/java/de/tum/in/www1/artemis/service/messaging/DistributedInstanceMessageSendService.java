@@ -148,10 +148,10 @@ public class DistributedInstanceMessageSendService implements InstanceMessageSen
     }
 
     protected void sendMessageDelayed(MessageTopic topic, Long payload) {
-        exec.schedule(() -> hazelcastInstance.getTopic(topic.toString()).publish(payload), 100, TimeUnit.MILLISECONDS);
+        exec.schedule(() -> hazelcastInstance.getTopic(topic.toString()).publish(payload), 1, TimeUnit.SECONDS);
     }
 
     protected void sendMessageDelayed(MessageTopic topic, Long... payload) {
-        exec.schedule(() -> hazelcastInstance.getTopic(topic.toString()).publish(payload), 100, TimeUnit.MILLISECONDS);
+        exec.schedule(() -> hazelcastInstance.getTopic(topic.toString()).publish(payload), 1, TimeUnit.SECONDS);
     }
 }
