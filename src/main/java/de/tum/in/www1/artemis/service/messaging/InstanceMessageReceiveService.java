@@ -72,79 +72,79 @@ public class InstanceMessageReceiveService {
         this.participantScoreScheduleService = participantScoreScheduleService;
         this.learningGoalProgressScheduleService = learningGoalProgressScheduleService;
 
-        hazelcastInstance.<Long>getTopic("programming-exercise-schedule").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.PROGRAMMING_EXERCISE_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleProgrammingExercise((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("programming-exercise-schedule-cancel").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.PROGRAMMING_EXERCISE_SCHEDULE_CANCEL.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleProgrammingExerciseCancel(message.getMessageObject());
         });
-        hazelcastInstance.<Long>getTopic("modeling-exercise-schedule").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.MODELING_EXERCISE_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleModelingExercise((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("modeling-exercise-schedule-cancel").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.MODELING_EXERCISE_SCHEDULE_CANCEL.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleModelingExerciseCancel(message.getMessageObject());
         });
-        hazelcastInstance.<Long>getTopic("modeling-exercise-schedule-instant-clustering").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.MODELING_EXERCISE_INSTANT_CLUSTERING.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processModelingExerciseInstantClustering((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("text-exercise-schedule").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.TEXT_EXERCISE_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleTextExercise((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("text-exercise-schedule-cancel").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.TEXT_EXERCISE_SCHEDULE_CANCEL.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processTextExerciseScheduleCancel((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("text-exercise-schedule-instant-clustering").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.TEXT_EXERCISE_INSTANT_CLUSTERING.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processTextExerciseInstantClustering((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("programming-exercise-unlock-repositories").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.PROGRAMMING_EXERCISE_UNLOCK_REPOSITORIES.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processUnlockAllRepositories((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("programming-exercise-lock-repositories").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.PROGRAMMING_EXERCISE_LOCK_REPOSITORIES.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processLockAllRepositories((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("user-management-remove-non-activated-user").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.USER_MANAGEMENT_REMOVE_NON_ACTIVATED_USERS.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processRemoveNonActivatedUser((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("user-management-cancel-remove-non-activated-user").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.USER_MANAGEMENT_CANCEL_REMOVE_NON_ACTIVATED_USERS.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processCancelRemoveNonActivatedUser((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("exercise-released-notification-schedule").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.EXERCISE_RELEASED_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleExerciseReleasedNotification((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("assessed-exercise-submission-notification-schedule").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.ASSESSED_EXERCISE_SUBMISSION_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleAssessedExerciseSubmittedNotification((message.getMessageObject()));
         });
-        hazelcastInstance.<Long>getTopic("exam-monitoring-schedule").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.EXAM_MONITORING_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleExamMonitoring(message.getMessageObject());
         });
-        hazelcastInstance.<Long>getTopic("exam-monitoring-schedule-cancel").addMessageListener(message -> {
+        hazelcastInstance.<Long>getTopic(MessageTopic.EXAM_MONITORING_SCHEDULE_CANCEL.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleExamMonitoringCancel(message.getMessageObject());
         });
-        hazelcastInstance.<Long[]>getTopic("participant-score-schedule").addMessageListener(message -> {
+        hazelcastInstance.<Long[]>getTopic(MessageTopic.PARTICIPANT_SCORE_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleParticipantScore(message.getMessageObject()[0], message.getMessageObject()[1], message.getMessageObject()[2]);
         });
-        hazelcastInstance.<Long[]>getTopic("schedule-progress-exercise").addMessageListener(message -> {
+        hazelcastInstance.<Long[]>getTopic(MessageTopic.SCHEDULE_PROGRESS_EXERCISE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processProgressUpdateForExercise(message.getMessageObject()[0], message.getMessageObject()[1]);
         });
-        hazelcastInstance.<Long[]>getTopic("schedule-progress-lecture-unit").addMessageListener(message -> {
+        hazelcastInstance.<Long[]>getTopic(MessageTopic.SCHEDULE_PROGRESS_LECTURE_UNIT.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processProgressUpdateForLectureUnit(message.getMessageObject()[0], message.getMessageObject()[1]);
         });
