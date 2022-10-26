@@ -24,11 +24,8 @@ public class ParticipantScoreListener {
 
     private InstanceMessageSendService instanceMessageSendService;
 
-    /**
-     * Empty constructor for Spring.
-     */
     public ParticipantScoreListener() {
-
+        // Empty constructor for Spring
     }
 
     public ParticipantScoreListener(@Lazy InstanceMessageSendService instanceMessageSendService) {
@@ -43,11 +40,11 @@ public class ParticipantScoreListener {
     @PostPersist
     public void createOrUpdateParticipantScore(ParticipantScore participantScore) {
         Set<User> users = new HashSet<>();
-        if (participantScore instanceof StudentScore) {
-            users.add(((StudentScore) participantScore).getUser());
+        if (participantScore instanceof StudentScore studentScore) {
+            users.add(studentScore.getUser());
         }
-        else if (participantScore instanceof TeamScore) {
-            users.addAll(((TeamScore) participantScore).getTeam().getStudents());
+        else if (participantScore instanceof TeamScore teamScore) {
+            users.addAll(teamScore.getTeam().getStudents());
         }
         else {
             return;
