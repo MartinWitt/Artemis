@@ -19,11 +19,8 @@ public class LectureUnitCompletionListener {
 
     private InstanceMessageSendService instanceMessageSendService;
 
-    /**
-     * Empty constructor for Spring.
-     */
     public LectureUnitCompletionListener() {
-
+        // Empty constructor for Spring
     }
 
     public LectureUnitCompletionListener(@Lazy InstanceMessageSendService instanceMessageSendService) {

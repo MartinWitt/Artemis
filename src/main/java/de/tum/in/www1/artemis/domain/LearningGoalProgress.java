@@ -107,11 +107,8 @@ public class LearningGoalProgress {
 
         private Long learningGoalId;
 
-        /**
-         * Empty constructor for Spring.
-         */
         public LearningGoalUserId() {
-
+            // Empty constructor for Spring
         }
 
         public LearningGoalUserId(Long userId, Long learningGoalId) {

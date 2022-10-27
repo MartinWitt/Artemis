@@ -171,7 +171,7 @@ public class LearningGoalProgressScheduleService {
     }
 
     private double calculateProgress(List<ILearningObject> learningObjects, User user) {
-        var completions = learningObjects.stream().map(ILearningObject -> hasUserCompleted(user, ILearningObject)).toList();
+        var completions = learningObjects.stream().map(learningObject -> hasUserCompleted(user, learningObject)).toList();
         completions.forEach(completed -> logger.debug("{} completed {}", user.getLogin(), completed));
         return completions.stream().mapToInt(completed -> completed ? 100 : 0).summaryStatistics().getAverage();
     }

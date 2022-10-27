@@ -22,10 +22,8 @@ public class ResultListener {
 
     private InstanceMessageSendService instanceMessageSendService;
 
-    /**
-     * Empty constructor for Spring.
-     */
     public ResultListener() {
+        // Empty constructor for Spring
     }
 
     @Autowired
