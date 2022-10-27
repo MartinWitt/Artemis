@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { LearningGoal, LearningGoalTaxonomy } from 'app/entities/learningGoal.model';
+import { LearningGoal, LearningGoalProgress, LearningGoalTaxonomy } from 'app/entities/learningGoal.model';
 import { LectureUnitService } from 'app/lecture/lecture-unit/lecture-unit-management/lectureUnit.service';
 import { LearningGoalDetailModalComponent } from 'app/course/learning-goals/learning-goal-detail-modal/learning-goal-detail-modal.component';
 import { LearningGoalCourseDetailModalComponent } from 'app/course/learning-goals/learning-goal-course-detail-modal/learning-goal-course-detail-modal.component';
@@ -42,6 +42,13 @@ export class LearningGoalCardComponent implements OnInit, OnDestroy {
         }
     }
 
+    getUserProgress(learningGoal: LearningGoal): LearningGoalProgress {
+        if (learningGoal.userProgress?.length) {
+            return learningGoal.userProgress.first()!;
+        }
+        return { progress: 0, confidence: 0, mastery: 0 } as LearningGoalProgress;
+    }
+
     getIcon(learningGoalTaxonomy?: LearningGoalTaxonomy): IconProp {
         if (!learningGoalTaxonomy) {
             return faQuestion as IconProp;
@@ -65,12 +72,12 @@ export class LearningGoalCardComponent implements OnInit, OnDestroy {
         }
 
         const tooltips = {
-            [LearningGoalTaxonomy.REMEMBER]: '',
-            [LearningGoalTaxonomy.UNDERSTAND]: '',
-            [LearningGoalTaxonomy.APPLY]: '',
-            [LearningGoalTaxonomy.ANALYZE]: '',
-            [LearningGoalTaxonomy.EVALUATE]: '',
-            [LearningGoalTaxonomy.CREATE]: '',
+            [LearningGoalTaxonomy.REMEMBER]: 'artemisApp.learningGoal.taxonomies.remember',
+            [LearningGoalTaxonomy.UNDERSTAND]: 'artemisApp.learningGoal.taxonomies.understand',
+            [LearningGoalTaxonomy.APPLY]: 'artemisApp.learningGoal.taxonomies.apply',
+            [LearningGoalTaxonomy.ANALYZE]: 'artemisApp.learningGoal.taxonomies.analyze',
+            [LearningGoalTaxonomy.EVALUATE]: 'artemisApp.learningGoal.taxonomies.evaluate',
+            [LearningGoalTaxonomy.CREATE]: 'artemisApp.learningGoal.taxonomies.create',
         };
 
         return tooltips[learningGoalTaxonomy];

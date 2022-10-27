@@ -1,0 +1,50 @@
+// Adapted from https://www.chilitime.design/2018/09/ActivityRings/
+
+@keyframes ring-appear {
+    0% {
+        stroke-dasharray: 0 100;
+    }
+}
+
+svg {
+    width: 100%;
+    height: auto;
+
+    .ring {
+        transform-origin: 50%;
+    }
+    .progressbar {
+        animation: ring-appear 1s ease-in-out forwards;
+        stroke-linecap: round;
+    }
+    circle {
+        fill: none;
+    }
+
+    .ring1 {
+        .background {
+            stroke: var(--learning-goal-rings-red-bg);
+        }
+        .progressbar {
+            stroke: var(--learning-goal-rings-red);
+        }
+    }
+
+    .ring2 {
+        .background {
+            stroke: var(--learning-goal-rings-green-bg);
+        }
+        .progressbar {
+            stroke: var(--learning-goal-rings-green);
+        }
+    }
+
+    .ring3 {
+        .background {
+            stroke: var(--learning-goal-rings-blue-bg);
+        }
+        .progressbar {
+            stroke: var(--learning-goal-rings-blue);
+        }
+    }
+}
