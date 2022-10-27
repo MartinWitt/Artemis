@@ -1,24 +1,24 @@
 package de.tum.in.www1.artemis.service.messaging;
 
 import static org.mockito.Mockito.*;
-import static tech.jhipster.config.JHipsterConstants.SPRING_PROFILE_TEST;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureTestDatabase
-@ActiveProfiles({ SPRING_PROFILE_TEST, "artemis", "bamboo", "bitbucket", "jira", "ldap", "athene", "apollon" }) // no scheduling
+import de.tum.in.www1.artemis.AbstractSpringIntegrationSaml2NoSchedulingTest;
+
 // Todo: Find a way to test this class including the "distributed" Hazelcast setup
-class DistributedInstanceMessageSendServiceTest {
+class DistributedInstanceMessageSendServiceTest extends AbstractSpringIntegrationSaml2NoSchedulingTest {
 
     @SpyBean
     DistributedInstanceMessageSendService sendService;
+
+    @AfterEach
+    void reset() {
+        Mockito.reset(sendService);
+    }
 
     @Test
     void processScheduleProgrammingExercise() {
