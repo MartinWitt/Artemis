@@ -12,5 +12,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface VersionRanges {
 
+    /**
+     * Specifies a set of different version ranges
+     * @return set of ranges
+     */
     VersionRange[] value() default {};
 }

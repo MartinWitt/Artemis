@@ -13,5 +13,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface VersionRange {
 
+    /**
+     * Specifies the range by version numbers
+     * @return array of version numbers
+     */
     int[] value();
 }
