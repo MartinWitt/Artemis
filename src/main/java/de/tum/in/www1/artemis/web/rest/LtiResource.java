@@ -39,7 +39,6 @@ import de.tum.in.www1.artemis.web.rest.errors.BadRequestAlertException;
  * REST controller for receiving LTI messages.
  */
 @RestController
-@RequestMapping("/api")
 public class LtiResource {
 
     private final Logger log = LoggerFactory.getLogger(LtiResource.class);

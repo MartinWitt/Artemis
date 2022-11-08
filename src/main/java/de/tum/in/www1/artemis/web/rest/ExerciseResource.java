@@ -34,7 +34,6 @@ import de.tum.in.www1.artemis.web.rest.errors.BadRequestAlertException;
  * REST controller for managing Exercise.
  */
 @RestController
-@RequestMapping("/api")
 @PreAuthorize("hasRole('ADMIN')")
 public class ExerciseResource {
 

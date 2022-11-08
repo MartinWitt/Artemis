@@ -65,7 +65,6 @@ import tech.jhipster.web.util.ResponseUtil;
  * Another option would be to have a specific JPA entity graph to handle this case.
  */
 @RestController
-@RequestMapping("/api")
 @PreAuthorize("hasRole('ADMIN')")
 public class UserResource {
 

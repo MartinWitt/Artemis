@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +27,6 @@ import de.tum.in.www1.artemis.web.rest.dto.ExerciseManagementStatisticsDTO;
  * REST controller for managing statistics.
  */
 @RestController
-@RequestMapping("/api")
 @PreAuthorize("hasRole('TA')")
 public class StatisticsResource {
 

@@ -27,7 +27,6 @@ import de.tum.in.www1.artemis.web.rest.errors.BadRequestAlertException;
  * REST controller for managing TextExercise.
  */
 @RestController
-@RequestMapping("api/")
 public class PlagiarismResource {
 
     private final CourseRepository courseRepository;

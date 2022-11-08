@@ -58,7 +58,6 @@ import tech.jhipster.web.util.PaginationUtil;
  * REST controller for managing Course.
  */
 @RestController
-@RequestMapping("api/")
 @PreAuthorize("hasRole('ADMIN')")
 public class CourseResource {
 

@@ -47,7 +47,6 @@ import io.jsonwebtoken.Jwts;
  * REST controller for managing Files.
  */
 @RestController
-@RequestMapping("/api")
 public class FileResource {
 
     private final Logger log = LoggerFactory.getLogger(FileResource.class);

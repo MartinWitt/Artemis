@@ -27,7 +27,6 @@ import de.tum.in.www1.artemis.web.rest.errors.AccessForbiddenException;
 import de.tum.in.www1.artemis.web.rest.errors.EntityNotFoundException;
 
 @RestController
-@RequestMapping("/api")
 public class ProgrammingExerciseParticipationResource {
 
     private final ParticipationRepository participationRepository;
