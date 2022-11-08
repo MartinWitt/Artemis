@@ -99,6 +99,10 @@ export class LearningGoalFormComponent implements OnInit, OnChanges {
         return this.form.get('description');
     }
 
+    get masteryThresholdControl() {
+        return this.form.get('masteryThreshold');
+    }
+
     ngOnChanges(): void {
         this.initializeForm();
         if (this.isEditMode && this.formData) {

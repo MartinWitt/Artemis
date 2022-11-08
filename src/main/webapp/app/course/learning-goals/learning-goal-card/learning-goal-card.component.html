@@ -1,13 +1,7 @@
 <div [id]="'learning-goal-card-' + learningGoal.id" class="course-exercise-row row align-items-center justify-content-between mb-2 mt-2 position-relative">
     <div class="col-auto d-none d-sm-block">
         <a class="exercise-row-icon">
-            <fa-icon
-                *ngIf="learningGoal.taxonomy"
-                [icon]="getIcon(learningGoal.taxonomy)"
-                size="2x"
-                [ngbTooltip]="getIconTooltip(learningGoal.taxonomy) | artemisTranslate"
-                container="body"
-            ></fa-icon>
+            <fa-icon [icon]="getIcon(learningGoal.taxonomy)" size="2x" [ngbTooltip]="getIconTooltip(learningGoal.taxonomy) | artemisTranslate" container="body"></fa-icon>
         </a>
     </div>
     <div class="col">
@@ -17,9 +11,9 @@
                     <fa-icon *ngIf="learningGoal.taxonomy" [icon]="getIcon(learningGoal.taxonomy)"></fa-icon>
                 </h4>
             </div>
-            <div class="col-sm col">
+            <div class="col-sm col py-2">
                 <h4>{{ learningGoal.title }}</h4>
-                <p *ngIf="learningGoal.description">{{ learningGoal.description }}</p>
+                <p *ngIf="learningGoal.description" class="m-0">{{ learningGoal.description }}</p>
                 <ng-content></ng-content>
             </div>
             <div *ngIf="!isPrerequisite && !displayOnly" class="col-sm col text-end py-1 px-2" style="max-width: 95px">
