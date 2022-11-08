@@ -2,7 +2,10 @@
 
 @keyframes ring-appear {
     0% {
-        stroke-dasharray: 0 100;
+        stroke-dashoffset: 100;
+    }
+    100% {
+        stroke-dashoffset: 0;
     }
 }
 
@@ -15,13 +18,21 @@ svg {
     }
     .progressbar {
         animation: ring-appear 1s ease-in-out forwards;
+        transition: stroke-dasharray 1s ease-in-out;
         stroke-linecap: round;
+
+        &.hidden {
+            // Use opacity: 0 instead of display: none to prevent animation when appearing
+            opacity: 0;
+        }
     }
     circle {
         fill: none;
     }
 
     .ring1 {
+        transform: scale(1) rotate(-90deg);
+
         .background {
             stroke: var(--learning-goal-rings-red-bg);
         }
@@ -31,6 +42,8 @@ svg {
     }
 
     .ring2 {
+        transform: scale(0.75) rotate(-90deg);
+
         .background {
             stroke: var(--learning-goal-rings-green-bg);
         }
@@ -40,6 +53,8 @@ svg {
     }
 
     .ring3 {
+        transform: scale(0.5) rotate(-90deg);
+
         .background {
             stroke: var(--learning-goal-rings-blue-bg);
         }

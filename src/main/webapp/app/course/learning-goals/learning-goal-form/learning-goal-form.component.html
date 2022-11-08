@@ -42,9 +42,13 @@
                 <select class="form-select mb-2" id="taxonomy" formControlName="taxonomy">
                     <option [ngValue]="undefined" selected></option>
                     <option *ngFor="let taxonomy of learningGoalTaxonomy | keys" [ngValue]="taxonomy">
-                        {{ 'artemisApp.learningGoal.taxonomies.' + learningGoalTaxonomy[taxonomy] | artemisTranslate }}
+                        {{ 'artemisApp.learningGoal.taxonomies.' + learningGoalTaxonomy[taxonomy].toLowerCase() | artemisTranslate }}
                     </option>
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="masteryThreshold">{{ 'artemisApp.learningGoal.masteryThreshold' | artemisTranslate }}: {{ form.get('masteryThreshold')!.value ?? 50 }}%</label>
+                <input type="range" min="0" max="100" class="form-range" id="masteryThreshold" formControlName="masteryThreshold" />
             </div>
             <div>
                 <label>{{ 'artemisApp.learningGoal.createLearningGoal.connectWithLectureUnits' | artemisTranslate }}</label>

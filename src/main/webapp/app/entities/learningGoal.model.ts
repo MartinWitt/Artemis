@@ -20,6 +20,7 @@ export class LearningGoal implements BaseEntity {
     public title?: string;
     public description?: string;
     public taxonomy?: LearningGoalTaxonomy;
+    public masteryThreshold?: number;
     public course?: Course;
     public exercises?: Exercise[];
     public lectureUnits?: LectureUnit[];

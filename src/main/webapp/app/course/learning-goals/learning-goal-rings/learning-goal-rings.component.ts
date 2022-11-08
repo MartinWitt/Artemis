@@ -1,5 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { round } from 'app/shared/util/utils';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'jhi-learning-goal-rings',
@@ -10,6 +9,4 @@ export class LearningGoalRingsComponent {
     @Input() progress = 0;
     @Input() confidence = 0;
     @Input() mastery = 0;
-
-    constructor() {}
 }

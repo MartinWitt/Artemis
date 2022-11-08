@@ -42,11 +42,16 @@ export class LearningGoalCardComponent implements OnInit, OnDestroy {
         }
     }
 
-    getUserProgress(learningGoal: LearningGoal): LearningGoalProgress {
-        if (learningGoal.userProgress?.length) {
-            return learningGoal.userProgress.first()!;
+    getUserProgress(): LearningGoalProgress {
+        if (this.learningGoal.userProgress?.length) {
+            return this.learningGoal.userProgress.first()!;
         }
-        return { progress: 0, confidence: 0, mastery: 0 } as LearningGoalProgress;
+        return { progress: 0, confidence: 0 } as LearningGoalProgress;
+    }
+
+    get masteryProgress(): number {
+        const weight = 0.66;
+        return (1 - weight) * this.getUserProgress().progress! + (weight * this.getUserProgress().confidence! * (this.learningGoal.masteryThreshold ?? 100)) / 100;
     }
 
     getIcon(learningGoalTaxonomy?: LearningGoalTaxonomy): IconProp {

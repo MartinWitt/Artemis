@@ -26,6 +26,9 @@ public class LearningGoal extends DomainObject {
     @Lob
     private String description;
 
+    @Column(name = "mastery_threshold")
+    private Integer masteryThreshold;
+
     /**
      * The type of learning goal according to Bloom's revised taxonomy.
      * @see <a href="https://en.wikipedia.org/wiki/Bloom%27s_taxonomy">Wikipedia</a>
@@ -78,6 +81,14 @@ public class LearningGoal extends DomainObject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getMasteryThreshold() {
+        return masteryThreshold;
+    }
+
+    public void setMasteryThreshold(Integer masteryThreshold) {
+        this.masteryThreshold = masteryThreshold;
     }
 
     public LearningGoalTaxonomy getTaxonomy() {

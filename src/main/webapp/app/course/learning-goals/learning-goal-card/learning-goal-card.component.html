@@ -20,12 +20,13 @@
             <div class="col-sm col">
                 <h4>{{ learningGoal.title }}</h4>
                 <p *ngIf="learningGoal.description">{{ learningGoal.description }}</p>
+                <ng-content></ng-content>
             </div>
-            <div class="col-sm col text-end py-1 px-2" style="max-width: 95px">
+            <div *ngIf="!isPrerequisite && !displayOnly" class="col-sm col text-end py-1 px-2" style="max-width: 95px">
                 <jhi-learning-goal-rings
-                    [progress]="getUserProgress(learningGoal).progress!"
-                    [confidence]="getUserProgress(learningGoal).confidence!"
-                    [mastery]="getUserProgress(learningGoal).progress! + getUserProgress(learningGoal).confidence!"
+                    [progress]="getUserProgress().progress!"
+                    [confidence]="getUserProgress().confidence!"
+                    [mastery]="masteryProgress"
                 ></jhi-learning-goal-rings>
             </div>
         </div>
