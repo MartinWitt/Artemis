@@ -257,11 +257,11 @@ public class VersionRangesRequestCondition implements RequestCondition<VersionRa
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (!(o instanceof VersionRangesRequestCondition that)) {
+        if (!(object instanceof VersionRangesRequestCondition that)) {
             return false;
         }
         if (ranges == null && that.ranges == null) {

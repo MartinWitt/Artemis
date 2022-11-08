@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import de.tum.in.www1.artemis.AbstractSpringIntegrationBambooBitbucketJiraTest;
 import de.tum.in.www1.artemis.config.VersioningConfiguration;
 
-public class VersionRangesRequestConditionTest extends AbstractSpringIntegrationBambooBitbucketJiraTest {
+class VersionRangesRequestConditionTest extends AbstractSpringIntegrationBambooBitbucketJiraTest {
 
     private static final DummyRequest dummyRequest = new DummyRequest();
 

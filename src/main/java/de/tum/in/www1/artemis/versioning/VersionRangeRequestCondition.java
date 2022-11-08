@@ -170,30 +170,30 @@ public class VersionRangeRequestCondition implements RequestCondition<VersionRan
      * @return Results see VERSION_RANGE_CMP_* in {@link VersionRangeRequestCondition}
      */
     public int compareTo(VersionRangeRequestCondition other) {
-        var v1 = this.versions;
-        var v2 = other.versions;
-        if (v1.size() == 1 && v2.size() == 1) {
-            return compareTwoLimits(v1, v2);
+        var versions1 = this.versions;
+        var versions2 = other.versions;
+        if (versions1.size() == 1 && versions2.size() == 1) {
+            return compareTwoLimits(versions1, versions2);
         }
-        else if (v1.size() == 2 && v2.size() == 2) {
-            return compareTwoRanges(v1, v2);
+        else if (versions1.size() == 2 && versions2.size() == 2) {
+            return compareTwoRanges(versions1, versions2);
         }
-        else if (v1.size() == 1 && v2.size() == 2) {
-            return compareLimitAndRange(v1.get(0), v2);
+        else if (versions1.size() == 1 && versions2.size() == 2) {
+            return compareLimitAndRange(versions1.get(0), versions2);
         }
-        else if (v1.size() == 2 && v2.size() == 1) {
-            return -compareLimitAndRange(v2.get(0), v1);
+        else if (versions1.size() == 2 && versions2.size() == 1) {
+            return -compareLimitAndRange(versions2.get(0), versions1);
         }
         throw new ApiVersionRangeNotValidException();
     }
 
     /**
-     * @param v1 Item containing two versions sorted ASC
-     * @param v2 Item to be compared to containing two versions sorted ASC
+     * @param range1 Item containing two versions sorted ASC
+     * @param range2 Item to be compared to containing two versions sorted ASC
      * @return Results see VERSION_RANGE_CMP_* in {@link VersionRangeRequestCondition}
      */
-    public static int compare(VersionRange v1, VersionRange v2) {
-        return new VersionRangeRequestCondition(v1).compareTo(new VersionRangeRequestCondition(v2));
+    public static int compare(VersionRange range1, VersionRange range2) {
+        return new VersionRangeRequestCondition(range1).compareTo(new VersionRangeRequestCondition(range2));
     }
 
     private int compareTwoLimits(List<Integer> limit1, List<Integer> limit2) {

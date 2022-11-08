@@ -53,6 +53,7 @@ public class VersionRequestMappingHandlerMapping extends RequestMappingHandlerMa
         if (!method.getDeclaringClass().getPackageName().contains("de.tum.in.www1.artemis")) {
             return info;
         }
+
         // We don't handle endpoints that are explicitly ignored
         if (method.getAnnotation(IgnoreGlobalMapping.class) != null) {
             return info;

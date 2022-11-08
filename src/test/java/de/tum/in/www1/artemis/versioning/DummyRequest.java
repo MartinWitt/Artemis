@@ -14,16 +14,6 @@ public class DummyRequest extends HttpServletRequestWrapper {
 
     private String requestURI;
 
-    private final String contextPath = "";
-
-    private String servletPath;
-
-    private String pathInfo;
-
-    private String queryString;
-
-    private String method;
-
     public DummyRequest() {
         super(UNSUPPORTED_REQUEST);
     }

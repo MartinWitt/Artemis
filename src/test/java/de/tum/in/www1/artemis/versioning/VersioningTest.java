@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import de.tum.in.www1.artemis.AbstractSpringIntegrationBambooBitbucketJiraTest;
 
-public class VersioningTest extends AbstractSpringIntegrationBambooBitbucketJiraTest {
+class VersioningTest extends AbstractSpringIntegrationBambooBitbucketJiraTest {
 
     @Autowired
     private ApplicationContext applicationContext;
