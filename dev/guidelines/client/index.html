@@ -70,21 +70,22 @@
 <li class="toctree-l3"><a class="reference internal" href="#strings">7. Strings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#buttons-and-links">8. Buttons and Links</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#icons-with-text">9. Icons with Text</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#code-style">10. Code Style</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#preventing-memory-leaks">11. Preventing Memory Leaks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#labels">10. Labels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-style">11. Code Style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preventing-memory-leaks">12. Preventing Memory Leaks</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#what-are-memory-leaks">What are memory leaks?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#what-are-common-reasons-for-memory-leaks">What are common reasons for memory leaks?</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#what-are-ways-to-identify-memory-leaks">What are ways to identify memory leaks?</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#defining-routes-and-breadcrumbs">12. Defining Routes and Breadcrumbs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#strict-template-check">13. Strict Template Check</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#defining-routes-and-breadcrumbs">13. Defining Routes and Breadcrumbs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strict-template-check">14. Strict Template Check</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#use-artemistranslatepipe-instead-of-translatepipe">Use ArtemisTranslatePipe instead of TranslatePipe</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#use-artemistimeagopipe-instead-of-timeagopipe">Use ArtemisTimeAgoPipe instead of TimeAgoPipe</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#chart-instantiation">14. Chart Instantiation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#responsive-layout">15. Responsive Layout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chart-instantiation">15. Chart Instantiation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#responsive-layout">16. Responsive Layout</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../client-tests/">Client Tests</a></li>
@@ -228,8 +229,27 @@
 </div>
 <p>Ignoring this will lead to inconsistent spacing between icons and text.</p>
 </section>
+<section id="labels">
+<h2>10. Labels<a class="headerlink" href="#labels" title="Permalink to this heading"></a></h2>
+<p>Use labels to caption inputs like text fields and checkboxes.
+Associated labels help screen readers to read out the text of the label when the input is focused.
+Additionally they allow the label to act as an input itself (e.g. the label also activates the checkbox).
+Make sure to associate them by putting the input inside the label component or by adding the for attribute in the label referencing the id of the input.</p>
+<p>Do one of these:</p>
+<div class="highlight-html+ng2 notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">label</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-check-label&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-check-input&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="p">(</span><span class="na">click</span><span class="p">)</span><span class="o">=</span><span class="s">&quot;foo()&quot;</span> <span class="p">/&gt;</span>
+    <span class="cp">{{</span> <span class="s1">&#39;artemisApp.labelText&#39;</span> | <span class="nv">artemisTranslate</span> <span class="cp">}}</span>
+<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;inputId&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-check-input&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="p">(</span><span class="na">click</span><span class="p">)</span><span class="o">=</span><span class="s">&quot;foo()&quot;</span> <span class="p">/&gt;</span>
+<span class="p">&lt;</span><span class="nt">label</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-check-label&quot;</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;inputId&quot;</span><span class="p">&gt;</span>
+    <span class="cp">{{</span> <span class="s1">&#39;artemisApp.labelText&#39;</span> | <span class="nv">artemisTranslate</span> <span class="cp">}}</span>
+<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</section>
 <section id="code-style">
-<h2>10. Code Style<a class="headerlink" href="#code-style" title="Permalink to this heading"></a></h2>
+<h2>11. Code Style<a class="headerlink" href="#code-style" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Use arrow functions over anonymous function expressions.</p></li>
 <li><dl class="simple">
@@ -262,7 +282,7 @@
 You can find the corresponding commands to invoke those tools in <code class="docutils literal notranslate"><span class="pre">package.json</span></code>.</p>
 </section>
 <section id="preventing-memory-leaks">
-<h2>11. Preventing Memory Leaks<a class="headerlink" href="#preventing-memory-leaks" title="Permalink to this heading"></a></h2>
+<h2>12. Preventing Memory Leaks<a class="headerlink" href="#preventing-memory-leaks" title="Permalink to this heading"></a></h2>
 <p>It is crucial that you try to prevent memory leaks in both your components and your tests.</p>
 <section id="what-are-memory-leaks">
 <h3>What are memory leaks?<a class="headerlink" href="#what-are-memory-leaks" title="Permalink to this heading"></a></h3>
@@ -321,7 +341,7 @@ RXJS subscriptions not being unsubscribed.</p>
 </section>
 </section>
 <section id="defining-routes-and-breadcrumbs">
-<h2>12. Defining Routes and Breadcrumbs<a class="headerlink" href="#defining-routes-and-breadcrumbs" title="Permalink to this heading"></a></h2>
+<h2>13. Defining Routes and Breadcrumbs<a class="headerlink" href="#defining-routes-and-breadcrumbs" title="Permalink to this heading"></a></h2>
 <p>The ideal schema for routes is that every variable in a path is preceded by a unique path segment: <code class="docutils literal notranslate"><span class="pre">\entityA\:entityIDA\entityB\:entityIDB</span></code></p>
 <p>For example, <code class="docutils literal notranslate"><span class="pre">\courses\:courseId\:exerciseId</span></code> is not a good path and should be written as <code class="docutils literal notranslate"><span class="pre">\courses\:courseId\exercises\:exerciseId</span></code>.
 Doubling textual segments like <code class="docutils literal notranslate"><span class="pre">\lectures\statistics\:lectureId</span></code> should be avoided and instead formulated as <code class="docutils literal notranslate"><span class="pre">\lectures\:lectureId\statistics</span></code>.</p>
@@ -352,7 +372,7 @@ Doubling textual segments like <code class="docutils literal notranslate"><span 
 </div>
 </section>
 <section id="strict-template-check">
-<h2>13. Strict Template Check<a class="headerlink" href="#strict-template-check" title="Permalink to this heading"></a></h2>
+<h2>14. Strict Template Check<a class="headerlink" href="#strict-template-check" title="Permalink to this heading"></a></h2>
 <p>To prevent errors for strict template rule in TypeScript, Artemis uses following approaches.</p>
 <section id="use-artemistranslatepipe-instead-of-translatepipe">
 <h3>Use ArtemisTranslatePipe instead of TranslatePipe<a class="headerlink" href="#use-artemistranslatepipe-instead-of-translatepipe" title="Permalink to this heading"></a></h3>
@@ -366,7 +386,7 @@ Doubling textual segments like <code class="docutils literal notranslate"><span 
 </section>
 </section>
 <section id="chart-instantiation">
-<h2>14. Chart Instantiation<a class="headerlink" href="#chart-instantiation" title="Permalink to this heading"></a></h2>
+<h2>15. Chart Instantiation<a class="headerlink" href="#chart-instantiation" title="Permalink to this heading"></a></h2>
 <p>We are using the framework <a class="reference external" href="https://github.com/swimlane/ngx-charts">ngx-charts</a> in order to instantiate charts and diagrams in Artemis.</p>
 <p>The following is an example HTML template for a vertical bar chart:</p>
 <div class="highlight-html+ng2 notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="p">#</span><span class="na">containerRef</span><span class="p"> </span><span class="na">class</span><span class="o">=</span><span class="s">&quot;col-md-9&quot;</span><span class="p">&gt;</span>
@@ -459,9 +479,9 @@ In this case, inject the <code class="docutils literal notranslate"><span class=
 <p>Some parts of these guidelines are adapted from <a class="reference external" href="https://github.com/microsoft/TypeScript-wiki/blob/main/Coding-guidelines.md">https://github.com/microsoft/TypeScript-wiki/blob/main/Coding-guidelines.md</a></p>
 </section>
 <section id="responsive-layout">
-<h2>15. Responsive Layout<a class="headerlink" href="#responsive-layout" title="Permalink to this heading"></a></h2>
+<h2>16. Responsive Layout<a class="headerlink" href="#responsive-layout" title="Permalink to this heading"></a></h2>
 <p>Ensure that the layout of your page or component shrinks accordingly and adapts to all display sizes (responsive design).</p>
-<p>Prefer using the <code class="docutils literal notranslate"><span class="pre">.container</span></code> class (<a class="reference external" href="https://getbootstrap.com/docs/5.2/layout/containers/">https://getbootstrap.com/docs/5.2/layout/containers/</a>) when you want limit the page width on extra-large screens.
+<p>Prefer using the <code class="docutils literal notranslate"><span class="pre">.container</span></code> class (<a class="reference external" href="https://getbootstrap.com/docs/5.2/layout/containers/">https://getbootstrap.com/docs/5.2/layout/containers/</a>) when you want to limit the page width on extra-large screens.
 Do not use the following for this purpose if it can be avoided:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;row justify-content-center&quot;</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;col-12 col-lg-8&quot;</span><span class="p">&gt;</span>
