@@ -459,21 +459,55 @@ So instead of:</p>
 </section>
 <section id="rest-endpoint-best-practices-for-authorization">
 <h2>21. REST endpoint best practices for authorization<a class="headerlink" href="#rest-endpoint-best-practices-for-authorization" title="Permalink to this heading"></a></h2>
-<p>To prevent unauthorized access to resources Artemis employs a two-step system:</p>
+<p>To reject unauthorized requests as early as possible, Artemis employs a two-step system:</p>
 <ol class="arabic simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">PreAuthorize</span></code> annotations are responsible for blocking users with wrong or missing authorization roles without querying the database.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PreAuthorize</span></code> and <code class="docutils literal notranslate"><span class="pre">Enforce</span></code> annotations are responsible for blocking users with wrong or missing authorization roles without querying the database.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">AuthorizationCheckService</span></code> is responsible for checking access rights to individual resources by querying the database.</p></li>
 </ol>
-<p>Because the first method without database queries is substantially faster, always annotate your REST endpoints with <code class="docutils literal notranslate"><span class="pre">&#64;PreAuthorize</span></code>. Pass the role with the <em>least</em> permissions as parameter to the <code class="docutils literal notranslate"><span class="pre">hasRole</span></code> method.
+<p>Because the first method without database queries is substantially faster, always annotate your REST endpoints with the corresponding annotation. Always use the annotation for the minimum role that has access.
 The following example makes the call only accessible to ADMIN and INSTRUCTOR users:</p>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@PreAuthorize</span><span class="p">(</span><span class="s">&quot;hasRole(&#39;INSTRUCTOR&#39;)&quot;</span><span class="p">)</span>
 <span class="kd">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">ProgrammingExercise</span><span class="o">&gt;</span> <span class="nf">getProgrammingExercise</span><span class="p">(</span><span class="nd">@PathVariable</span> <span class="kt">long</span> <span class="n">exerciseId</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="n">exercise</span> <span class="o">=</span> <span class="n">programmingExerciseRepository</span><span class="p">.</span><span class="na">findById</span><span class="p">(</span><span class="n">exerciseId</span><span class="p">);</span>
+    <span class="n">authCheckService</span><span class="p">.</span><span class="na">checkHasAtLeastRoleForExerciseElseThrow</span><span class="p">(</span><span class="n">Role</span><span class="p">.</span><span class="na">INSTRUCTOR</span><span class="p">,</span> <span class="n">exercise</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+    <span class="o">[</span><span class="p">...</span><span class="o">]</span>
+    <span class="k">return</span> <span class="n">ResponseEntity</span><span class="p">.</span><span class="na">ok</span><span class="p">(</span><span class="n">programmingExerciseRepository</span><span class="p">.</span><span class="na">findById</span><span class="p">(</span><span class="n">exerciseId</span><span class="p">));</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Artemis distinguishes between six different roles: ADMIN, INSTRUCTOR, EDITOR, TA (teaching assistant), USER and ANONYMOUS.
 Each of the roles has the all the access rights of the roles following it, e.g. ANONYMOUS has almost no rights, while ADMIN users can access every page.</p>
-<p>If a user passes the <code class="docutils literal notranslate"><span class="pre">PreAuthorize</span></code> check, the access to individual resources like courses and exercises still has to be checked. (A user can be a teaching assistant in one course, but only a student in another, for example.)
+<p>The table contains all annotations for the corresponding minimum role. Different annotations get used during migration.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 69%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Minimum Role</strong></p></td>
+<td><p><strong>Endpoint Annotation</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>ADMIN</p></td>
+<td><p>&#64;EnforceAdmin</p></td>
+</tr>
+<tr class="row-odd"><td><p>INSTRUCTOR</p></td>
+<td><p>&#64;PreAuthorize(“hasRole(‘INSTRUCTOR’)”)</p></td>
+</tr>
+<tr class="row-even"><td><p>EDITOR</p></td>
+<td><p>&#64;PreAuthorize(“hasRole(‘EDITOR’)”)</p></td>
+</tr>
+<tr class="row-odd"><td><p>TA</p></td>
+<td><p>&#64;PreAuthorize(“hasRole(‘TA’)”)</p></td>
+</tr>
+<tr class="row-even"><td><p>USER</p></td>
+<td><p>&#64;PreAuthorize(“hasRole(‘USER’)”)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ANONYMOUS</p></td>
+<td><p>&#64;PreAuthorize(“permitAll()”)</p></td>
+</tr>
+</tbody>
+</table>
+<p>If a user passes the pre-authorization, the access to individual resources like courses and exercises still has to be checked. For example, a user can be a teaching assistant in one course, but only a student in another.
 However, do not fetch the user from the database yourself (unless you need to re-use the user object), but only hand a role to the <code class="docutils literal notranslate"><span class="pre">AuthorizationCheckService</span></code>:</p>
 <div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">// If we pass &#39;null&#39; instead of a user here, the service will fetch the user object</span>
 <span class="c1">// and check if the user has at least the given role and access to the resource</span>
