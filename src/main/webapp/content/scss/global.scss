@@ -121,6 +121,14 @@ a.btn {
             font-weight: normal;
         }
     }
+    .footer-git-wrapper {
+        display: flex;
+        .footer-git {
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    }
 }
 
 // make sure to align with the bootstrap rule here
