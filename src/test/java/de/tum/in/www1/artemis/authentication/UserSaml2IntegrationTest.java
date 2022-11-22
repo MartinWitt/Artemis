@@ -23,7 +23,7 @@ import de.tum.in.www1.artemis.repository.UserRepository;
 import de.tum.in.www1.artemis.security.jwt.TokenProvider;
 import de.tum.in.www1.artemis.service.connectors.SAML2Service;
 import de.tum.in.www1.artemis.service.user.PasswordService;
-import de.tum.in.www1.artemis.web.rest.UserJwtResource;
+import de.tum.in.www1.artemis.web.rest.publicc.UserJwtResource;
 import de.tum.in.www1.artemis.web.rest.vm.LoginVM;
 
 /**
@@ -54,7 +54,7 @@ class UserSaml2IntegrationTest extends AbstractSpringIntegrationSaml2Test {
 
     @Test
     void testAuthenticationRedirect() throws Exception {
-        request.postWithResponseBody("/api/saml2", Boolean.FALSE, UserJWTController.JWTToken.class, HttpStatus.UNAUTHORIZED);
+        request.postWithResponseBody("/api/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.UNAUTHORIZED);
         final String redirectTarget = request.getRedirectTarget("/saml2/authenticate", HttpStatus.FOUND);
         assertThat(redirectTarget).endsWith("/login");
     }
@@ -152,7 +152,7 @@ class UserSaml2IntegrationTest extends AbstractSpringIntegrationSaml2Test {
 
         // Create user
         mockSAMLAuthentication();
-        request.postWithResponseBody("/api/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.OK);
+        request.postWithResponseBody("/api/public/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.OK);
         assertStudentExists();
 
         // Change Password
@@ -166,7 +166,7 @@ class UserSaml2IntegrationTest extends AbstractSpringIntegrationSaml2Test {
         httpHeaders.add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36");
 
         // Test whether authorize generates a valid token
-        UserJwtResource.JWTToken result = request.postWithResponseBody("/api/authenticate", createLoginVM(), UserJwtResource.JWTToken.class, HttpStatus.OK, httpHeaders);
+        UserJwtResource.JWTToken result = request.postWithResponseBody("/api/public/authenticate", createLoginVM(), UserJwtResource.JWTToken.class, HttpStatus.OK, httpHeaders);
         assertValidToken(result);
 
         // Check SAML Login afterwards ..
@@ -175,7 +175,7 @@ class UserSaml2IntegrationTest extends AbstractSpringIntegrationSaml2Test {
         // Mock existing SAML2 Auth
         mockSAMLAuthentication();
         // Test whether authorizeSAML2 generates a valid token
-        result = request.postWithResponseBody("/api/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.OK);
+        result = request.postWithResponseBody("/api/public/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.OK);
         assertValidToken(result);
     }
 
@@ -188,13 +188,13 @@ class UserSaml2IntegrationTest extends AbstractSpringIntegrationSaml2Test {
     void testInvalidAuthenticationSaml2Login() throws Exception {
         assertStudentNotExists();
         // Test whether authorizeSAML2 generates a no token
-        request.post("/api/saml2", Boolean.FALSE, HttpStatus.UNAUTHORIZED);
+        request.post("/api/public/saml2", Boolean.FALSE, HttpStatus.UNAUTHORIZED);
         assertStudentNotExists();
     }
 
     private void authenticate(Saml2AuthenticatedPrincipal principal) throws Exception {
         mockSAMLAuthentication(principal);
-        UserJwtResource.JWTToken result = request.postWithResponseBody("/api/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.OK);
+        UserJwtResource.JWTToken result = request.postWithResponseBody("/api/public/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.OK);
         assertValidToken(result);
     }
 

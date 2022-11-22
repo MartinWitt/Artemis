@@ -25,7 +25,7 @@ import de.tum.in.www1.artemis.service.connectors.SAML2Service;
 import de.tum.in.www1.artemis.service.connectors.jenkins.JenkinsProgrammingLanguageFeatureService;
 import de.tum.in.www1.artemis.util.DatabaseUtilService;
 import de.tum.in.www1.artemis.util.RequestUtilService;
-import de.tum.in.www1.artemis.web.rest.UserJwtResource;
+import de.tum.in.www1.artemis.web.rest.publicc.UserJwtResource;
 
 /**
  * Test base for {@link UserJwtResource#authorizeSAML2(String)} and {@link SAML2Service}.
