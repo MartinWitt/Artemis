@@ -42,6 +42,13 @@ public class LoggerVM {
     }
 
     @Override
+    public int hashCode() {
+        int result = getName() != null ? getName().hashCode() : 0;
+        result = 31 * result + (getLevel() != null ? getLevel().hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "LoggerVM{" + "name='" + name + '\'' + ", level='" + level + '\'' + '}';
     }

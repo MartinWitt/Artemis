@@ -12,6 +12,9 @@ import ch.qos.logback.classic.LoggerContext;
 import de.tum.in.www1.artemis.security.annotations.EnforceAdmin;
 import de.tum.in.www1.artemis.web.rest.vm.LoggerVM;
 
+/**
+ * Controller for view and managing Log Level at runtime.
+ */
 @RestController
 @RequestMapping("api/admin/")
 public class LogResource {

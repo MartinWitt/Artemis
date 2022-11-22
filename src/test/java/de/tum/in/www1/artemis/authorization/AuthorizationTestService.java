@@ -3,7 +3,11 @@ package de.tum.in.www1.artemis.authorization;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -11,10 +15,13 @@ import org.springframework.stereotype.Service;
 import de.tum.in.www1.artemis.security.annotations.EnforceAdmin;
 import de.tum.in.www1.artemis.security.annotations.EnforceNothing;
 
+/**
+ * This service is used to check if the authorization annotations are used correctly.
+ */
 @Service
 public class AuthorizationTestService {
 
-    private static final List<Class<? extends Annotation>> ALLOWED_AUTH_METHOD_ANNOTATIONS = List.of(EnforceAdmin.class, EnforceNothing.class, PreAuthorize.class);
+    private static final Set<Class<? extends Annotation>> ALLOWED_AUTH_METHOD_ANNOTATIONS = Set.of(EnforceAdmin.class, EnforceNothing.class, PreAuthorize.class);
 
     private final Method preAuthorizeValueAnnotation = PreAuthorize.class.getDeclaredMethod("value");
 

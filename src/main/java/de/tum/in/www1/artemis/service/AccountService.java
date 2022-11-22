@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import de.tum.in.www1.artemis.config.Constants;
+import de.tum.in.www1.artemis.web.rest.AccountResource;
+import de.tum.in.www1.artemis.web.rest.publicc.PublicAccountResource;
 
+/**
+ * Service class for {@link AccountResource} and {@link PublicAccountResource}.
+ */
 @Service
 public class AccountService {
 
