@@ -54,7 +54,7 @@ class UserSaml2IntegrationTest extends AbstractSpringIntegrationSaml2Test {
 
     @Test
     void testAuthenticationRedirect() throws Exception {
-        request.postWithResponseBody("/api/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.UNAUTHORIZED);
+        request.postWithResponseBody("/api/public/saml2", Boolean.FALSE, UserJwtResource.JWTToken.class, HttpStatus.UNAUTHORIZED);
         final String redirectTarget = request.getRedirectTarget("/saml2/authenticate", HttpStatus.FOUND);
         assertThat(redirectTarget).endsWith("/login");
     }
