@@ -101,7 +101,7 @@ class InternalAuthenticationIntegrationTest extends AbstractSpringIntegrationJen
 
         programmingExercise = programmingExerciseRepository.findAllWithEagerParticipations().get(0);
         ltiLaunchRequest = AuthenticationIntegrationTestHelper.setupDefaultLtiLaunchRequest();
-        doReturn(null).when(ltiService).verifyRequest(any(), any());
+        doReturn(null).when(lti10Service).verifyRequest(any(), any());
 
         final var userAuthority = new Authority(Role.STUDENT.getAuthority());
         final var instructorAuthority = new Authority(Role.INSTRUCTOR.getAuthority());
@@ -124,7 +124,6 @@ class InternalAuthenticationIntegrationTest extends AbstractSpringIntegrationJen
 
     @Test
     void launchLtiRequest_authViaEmail_success() throws Exception {
-        ltiLaunchRequest.setCustom_lookup_user_by_email(true);
         request.postForm("/api/lti/launch/" + programmingExercise.getId(), ltiLaunchRequest, HttpStatus.FOUND);
 
         final var user = userRepository.findAll().get(0);
@@ -187,7 +186,7 @@ class InternalAuthenticationIntegrationTest extends AbstractSpringIntegrationJen
         assertThat(exercises).isEmpty();
         jenkinsRequestMockProvider.mockCreateUser(student, false, false, false);
 
-        final var user = request.postWithResponseBody("/api/users", new ManagedUserVM(student), User.class, HttpStatus.CREATED);
+        final var user = request.postWithResponseBody("/api/admin/users", new ManagedUserVM(student), User.class, HttpStatus.CREATED);
         assertThat(user).isNotNull();
         return user;
     }
@@ -277,7 +276,7 @@ class InternalAuthenticationIntegrationTest extends AbstractSpringIntegrationJen
 
         jenkinsRequestMockProvider.mockUpdateUserAndGroups(student.getLogin(), student, newGroups, oldGroups, false);
 
-        final var response = request.putWithResponseBody("/api/users", managedUserVM, User.class, HttpStatus.OK);
+        final var response = request.putWithResponseBody("/api/admin/users", managedUserVM, User.class, HttpStatus.OK);
         final var updatedUserIndDB = userRepository.findOneWithGroupsAndAuthoritiesByLogin(student.getLogin()).get();
 
         assertThat(passwordService.checkPasswordMatch(managedUserVM.getPassword(), updatedUserIndDB.getPassword())).isTrue();

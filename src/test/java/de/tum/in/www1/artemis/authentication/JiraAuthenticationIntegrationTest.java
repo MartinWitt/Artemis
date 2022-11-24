@@ -91,7 +91,7 @@ class JiraAuthenticationIntegrationTest extends AbstractSpringIntegrationBambooB
         database.addOnlineCourseConfigurationToCourse(course);
         programmingExercise = programmingExerciseRepository.findAllWithEagerParticipations().get(0);
         ltiLaunchRequest = AuthenticationIntegrationTestHelper.setupDefaultLtiLaunchRequest();
-        doReturn(null).when(ltiService).verifyRequest(any(), any());
+        doReturn(null).when(lti10Service).verifyRequest(any(), any());
 
         final var userAuthority = new Authority(Role.STUDENT.getAuthority());
         final var instructorAuthority = new Authority(Role.INSTRUCTOR.getAuthority());
@@ -126,7 +126,6 @@ class JiraAuthenticationIntegrationTest extends AbstractSpringIntegrationBambooB
         jiraRequestMockProvider.mockAddUserToGroupForMultipleGroups(Set.of(course.getStudentGroupName()));
         jiraRequestMockProvider.mockGetOrCreateUserLti(username, "", username, email, firstName, groups);
 
-        ltiLaunchRequest.setCustom_lookup_user_by_email(true);
         request.postForm("/api/lti/launch/" + programmingExercise.getId(), ltiLaunchRequest, HttpStatus.FOUND);
         final var user = userRepository.findOneByLogin(username).orElseThrow();
         final var ltiUser = ltiUserIdRepository.findAll().get(0);
