@@ -1,20 +1,12 @@
-package de.tum.in.www1.artemis.service.scheduled;
+package de.tum.in.www1.artemis.service;
 
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Stream;
 
-import javax.annotation.PreDestroy;
-import javax.validation.constraints.NotNull;
-
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import de.tum.in.www1.artemis.domain.*;
@@ -27,14 +19,9 @@ import de.tum.in.www1.artemis.security.SecurityUtils;
 import de.tum.in.www1.artemis.service.util.RoundingUtil;
 
 @Service
-@Profile("scheduling")
-public class LearningGoalProgressScheduleService {
+public class LearningGoalProgressService {
 
-    private final Logger logger = LoggerFactory.getLogger(LearningGoalProgressScheduleService.class);
-
-    private final TaskScheduler scheduler;
-
-    private final Map<Integer, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+    private final Logger logger = LoggerFactory.getLogger(LearningGoalProgressService.class);
 
     private final LearningGoalRepository learningGoalRepository;
 
@@ -50,10 +37,9 @@ public class LearningGoalProgressScheduleService {
 
     private final UserRepository userRepository;
 
-    public LearningGoalProgressScheduleService(@Qualifier("taskScheduler") TaskScheduler scheduler, LearningGoalRepository learningGoalRepository,
-            LearningGoalProgressRepository learningGoalProgressRepository, StudentScoreRepository studentScoreRepository, TeamScoreRepository teamScoreRepository,
-            ExerciseRepository exerciseRepository, LectureUnitRepository lectureUnitRepository, UserRepository userRepository) {
-        this.scheduler = scheduler;
+    public LearningGoalProgressService(LearningGoalRepository learningGoalRepository, LearningGoalProgressRepository learningGoalProgressRepository,
+            StudentScoreRepository studentScoreRepository, TeamScoreRepository teamScoreRepository, ExerciseRepository exerciseRepository,
+            LectureUnitRepository lectureUnitRepository, UserRepository userRepository) {
         this.learningGoalRepository = learningGoalRepository;
         this.learningGoalProgressRepository = learningGoalProgressRepository;
         this.studentScoreRepository = studentScoreRepository;
@@ -63,61 +49,27 @@ public class LearningGoalProgressScheduleService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Check if the scheduler has tasks to be executed or is idle.
-     * @return true if the scheduler is idle, false otherwise
-     */
-    public boolean isIdle() {
-        return scheduledTasks.isEmpty();
-    }
-
-    /**
-     * Before shutdown, cancel all running or scheduled tasks.
-     */
-    @PreDestroy
-    public void shutdown() {
-        // Stop all running tasks, we will reschedule them on startup again
-        scheduledTasks.values().forEach(future -> {
-            future.cancel(true);
-        });
-        scheduledTasks.clear();
-    }
-
-    public void updateLearningGoalProgressForExercise(@NotNull Long exerciseId, @NotNull Long userId) {
-        this.scheduleTask(LearningObjectType.EXERCISE, exerciseId, userId);
-    }
-
-    public void updateLearningGoalProgressForLectureUnit(@NotNull Long lectureUnitId, @NotNull Long userId) {
-        this.scheduleTask(LearningObjectType.LECTURE_UNIT, lectureUnitId, userId);
-    }
-
-    protected void scheduleTask(LearningObjectType learningObject, Long learningObjectId, Long userId) {
-        final int progressHash = new LearningGoalProgressId(learningObject, learningObjectId, userId).hashCode();
-        var scheduledFuture = scheduledTasks.get(progressHash);
-        if (scheduledFuture != null) {
-            // If a task is already scheduled, cancel it and reschedule it
-            scheduledFuture.cancel(true);
-            scheduledTasks.remove(progressHash);
-        }
-
-        var schedulingTime = ZonedDateTime.now().plus(3, ChronoUnit.SECONDS);
-        var future = scheduler.schedule(() -> this.executeTask(learningObject, learningObjectId, userId), schedulingTime.toInstant());
-        scheduledTasks.put(progressHash, future);
-        logger.info("Schedule task to update progress for learning object {} and user {} at {}.", learningObjectId, userId, schedulingTime);
-    }
-
-    private void executeTask(LearningObjectType learningObject, Long learningObjectId, Long userId) {
-        long start = System.currentTimeMillis();
-        logger.info("Learning goal progress task for learning goal {} and user {} started", learningObjectId, userId);
+    @Async
+    public void executeTask(ILearningObject learningObject, Long userId) {
         try {
             SecurityUtils.setAuthorizationObject();
 
             Set<LearningGoal> learningGoals;
-            if (learningObject == LearningObjectType.EXERCISE) {
-                learningGoals = exerciseRepository.findByIdWithLearningGoals(learningObjectId).map(Exercise::getLearningGoals).orElse(null);
+            if (learningObject instanceof Exercise exercise) {
+                if (Hibernate.isPropertyInitialized(exercise, "learningGoals")) {
+                    learningGoals = exercise.getLearningGoals();
+                }
+                else {
+                    learningGoals = exerciseRepository.findByIdWithLearningGoals(exercise.getId()).map(Exercise::getLearningGoals).orElse(null);
+                }
             }
-            else if (learningObject == LearningObjectType.LECTURE_UNIT) {
-                learningGoals = lectureUnitRepository.findByIdWithLearningGoals(learningObjectId).map(LectureUnit::getLearningGoals).orElse(null);
+            else if (learningObject instanceof LectureUnit lectureUnit) {
+                if (Hibernate.isPropertyInitialized(lectureUnit, "learningGoals")) {
+                    learningGoals = lectureUnit.getLearningGoals();
+                }
+                else {
+                    learningGoals = lectureUnitRepository.findByIdWithLearningGoals(lectureUnit.getId()).map(LectureUnit::getLearningGoals).orElse(null);
+                }
             }
             else {
                 return;
@@ -133,13 +85,8 @@ public class LearningGoalProgressScheduleService {
             });
         }
         catch (Exception e) {
-            logger.error("Exception while processing progress task for learning goal {} and user {}:", learningObjectId, userId, e);
+            logger.error("Exception while updating progress for learning goal", e);
         }
-        finally {
-            scheduledTasks.remove(new LearningGoalProgressId(learningObject, learningObjectId, userId).hashCode());
-        }
-        long end = System.currentTimeMillis();
-        logger.info("Updating the learning goal progress for learning goal {} and user {} took {} ms.", learningObjectId, userId, end - start);
     }
 
     private void updateLearningGoalProgress(Long learningGoalId, Long userId) {
@@ -194,10 +141,4 @@ public class LearningGoalProgressScheduleService {
         throw new IllegalArgumentException("Completable must be either LectureUnit or Exercise");
     }
 
-    public enum LearningObjectType {
-        LECTURE_UNIT, EXERCISE
-    }
-
-    public record LearningGoalProgressId(LearningObjectType learningObjectType, Long learningObjectId, Long userId) {
-    }
 }

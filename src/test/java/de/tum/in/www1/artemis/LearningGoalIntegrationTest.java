@@ -34,7 +34,6 @@ import de.tum.in.www1.artemis.repository.*;
 import de.tum.in.www1.artemis.service.ModelAssessmentKnowledgeService;
 import de.tum.in.www1.artemis.service.ParticipationService;
 import de.tum.in.www1.artemis.service.TextAssessmentKnowledgeService;
-import de.tum.in.www1.artemis.service.scheduled.LearningGoalProgressScheduleService;
 import de.tum.in.www1.artemis.util.ModelFactory;
 import de.tum.in.www1.artemis.web.rest.dto.CourseLearningGoalProgress;
 import de.tum.in.www1.artemis.web.rest.dto.SearchResultPageDTO;
@@ -85,9 +84,6 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
 
     @Autowired
     private ParticipantScoreRepository participantScoreRepository;
-
-    @Autowired
-    private LearningGoalProgressScheduleService learningGoalProgressScheduleService;
 
     private Long idOfCourse;
 
@@ -533,7 +529,6 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
         createParticipationSubmissionAndResult(idOfTeamTextExercise, teams.get(3), 10.0, 0.0, 50, true);
 
         await().until(() -> participantScoreRepository.findAll().size() == 4);
-        await().until(() -> learningGoalProgressScheduleService.isIdle());
 
         CourseLearningGoalProgress courseLearningGoalProgress = request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/course-progress", HttpStatus.OK,
                 CourseLearningGoalProgress.class);
@@ -563,7 +558,6 @@ class LearningGoalIntegrationTest extends AbstractSpringIntegrationBambooBitbuck
         createParticipationSubmissionAndResult(idOfTextExercise, instructor1, 10.0, 0.0, 100, true); // will be ignored as not a student
 
         await().until(() -> participantScoreRepository.findAll().size() == 5);
-        await().until(() -> learningGoalProgressScheduleService.isIdle());
 
         CourseLearningGoalProgress courseLearningGoalProgress = request.get("/api/courses/" + idOfCourse + "/goals/" + idOfLearningGoal + "/course-progress", HttpStatus.OK,
                 CourseLearningGoalProgress.class);

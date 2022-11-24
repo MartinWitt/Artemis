@@ -14,6 +14,7 @@ import de.tum.in.www1.artemis.domain.*;
 import de.tum.in.www1.artemis.domain.modeling.ModelingExercise;
 import de.tum.in.www1.artemis.repository.*;
 import de.tum.in.www1.artemis.security.SecurityUtils;
+import de.tum.in.www1.artemis.service.LearningGoalProgressService;
 import de.tum.in.www1.artemis.service.scheduled.*;
 import de.tum.in.www1.artemis.service.scheduled.cache.monitoring.ExamMonitoringScheduleService;
 
@@ -37,8 +38,6 @@ public class InstanceMessageReceiveService {
 
     private final ParticipantScoreScheduleService participantScoreScheduleService;
 
-    private final LearningGoalProgressScheduleService learningGoalProgressScheduleService;
-
     private final Optional<AtheneScheduleService> atheneScheduleService;
 
     private final UserScheduleService userScheduleService;
@@ -58,7 +57,7 @@ public class InstanceMessageReceiveService {
             ExamMonitoringScheduleService examMonitoringScheduleService, TextExerciseRepository textExerciseRepository, ExerciseRepository exerciseRepository,
             Optional<AtheneScheduleService> atheneScheduleService, HazelcastInstance hazelcastInstance, UserRepository userRepository, UserScheduleService userScheduleService,
             NotificationScheduleService notificationScheduleService, ParticipantScoreScheduleService participantScoreScheduleService,
-            LearningGoalProgressScheduleService learningGoalProgressScheduleService) {
+            LearningGoalProgressService learningGoalProgressService) {
         this.programmingExerciseRepository = programmingExerciseRepository;
         this.programmingExerciseScheduleService = programmingExerciseScheduleService;
         this.examMonitoringScheduleService = examMonitoringScheduleService;
@@ -71,7 +70,6 @@ public class InstanceMessageReceiveService {
         this.userScheduleService = userScheduleService;
         this.notificationScheduleService = notificationScheduleService;
         this.participantScoreScheduleService = participantScoreScheduleService;
-        this.learningGoalProgressScheduleService = learningGoalProgressScheduleService;
 
         hazelcastInstance.<Long>getTopic(MessageTopic.PROGRAMMING_EXERCISE_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
@@ -148,14 +146,6 @@ public class InstanceMessageReceiveService {
         hazelcastInstance.<Long[]>getTopic(MessageTopic.PARTICIPANT_SCORE_SCHEDULE.toString()).addMessageListener(message -> {
             SecurityUtils.setAuthorizationObject();
             processScheduleParticipantScore(message.getMessageObject()[0], message.getMessageObject()[1], message.getMessageObject()[2]);
-        });
-        hazelcastInstance.<Long[]>getTopic(MessageTopic.SCHEDULE_PROGRESS_EXERCISE.toString()).addMessageListener(message -> {
-            SecurityUtils.setAuthorizationObject();
-            processProgressUpdateForExercise(message.getMessageObject()[0], message.getMessageObject()[1]);
-        });
-        hazelcastInstance.<Long[]>getTopic(MessageTopic.SCHEDULE_PROGRESS_LECTURE_UNIT.toString()).addMessageListener(message -> {
-            SecurityUtils.setAuthorizationObject();
-            processProgressUpdateForLectureUnit(message.getMessageObject()[0], message.getMessageObject()[1]);
         });
     }
 
@@ -289,11 +279,4 @@ public class InstanceMessageReceiveService {
         participantScoreScheduleService.scheduleTask(exerciseId, participantId, resultIdToBeDeleted);
     }
 
-    public void processProgressUpdateForExercise(Long exerciseId, Long userId) {
-        learningGoalProgressScheduleService.updateLearningGoalProgressForExercise(exerciseId, userId);
-    }
-
-    public void processProgressUpdateForLectureUnit(Long lectureUnitId, Long userId) {
-        learningGoalProgressScheduleService.updateLearningGoalProgressForLectureUnit(lectureUnitId, userId);
-    }
 }
